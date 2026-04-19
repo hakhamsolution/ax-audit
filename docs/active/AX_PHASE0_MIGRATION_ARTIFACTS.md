@@ -1,7 +1,7 @@
 # AX_PHASE0_MIGRATION_ARTIFACTS
 
-Version: 2026-04-20 v4
-Status: Phase 0 execution artifact; mk2 runtime evidence, live credential-layout proof, and GitHub remote bootstrap incorporated, but platform gates remain
+Version: 2026-04-20 v5
+Status: Phase 0 execution artifact; mk2 runtime evidence, live credential-layout proof, GitHub remote bootstrap, and GitHub platform-gate evidence incorporated
 
 ## 1. Purpose
 
@@ -60,7 +60,7 @@ This resolves the inventory gap that previously named the token ownership manife
 | Telegram bot token | Telegram ingress and alert mirror | Owner + Deputy Owner shared | Owner-managed with Operator use | high | R1 | live runtime confirms one shared Telegram bot token across both manager groups; bot-admin custody proof and isolated AX bot binding are still missing |
 | Notion integration token | Notion canonical + ops DBs | Owner + Deputy Owner shared | Owner-managed with limited operator use | medium | R1 | exact integration ownership record not exported |
 | Google OAuth / app credentials | Drive/Docs/Sheets/Slides actions | Owner + Deputy Owner shared | Owner-managed with limited operator use | medium | R1 | live connection inventory missing |
-| GitHub app / PAT / deploy credentials | repo write, CI, workflow ops | Owner + Deputy Owner shared | Owner-managed with Approver oversight | medium | R1 | canonical remote is initialized, but branch-protection and app-scope proof are still missing |
+| GitHub app / PAT / deploy credentials | repo write, CI, workflow ops | Owner + Deputy Owner shared | Owner-managed with Approver oversight | medium | R1 | canonical remote is initialized, but branch-protection is plan-gated for this private repo and Actions execution is billing-gated until account settlement |
 | Codex OAuth runner auth (`~/.codex/auth.json`) | trusted Codex OAuth majors | approved team leads on trusted host | Operator-held runner auth, no broad secret-store role | low | R1 | trusted-runner host inventory not exported |
 | future SOPS age key | secret backend replacement | not yet deployed | Owner + Deputy Owner four-eyes custody | medium | R2 | backend not yet migrated |
 
@@ -112,7 +112,7 @@ Current retirement candidates:
 - `AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md` has been recovered from mk2 evidence and key guard install markers were verified on the live host.
 - The exact historical 57-skill manifest is still missing, but later `90 -> 65` mapping evidence exists and current-state classification no longer depends on the historical count.
 - Slack/Telegram live runtime now proves shared platform-level credentials, but console-level custody proof and isolated AX credential sets are still missing.
-- Branch-protection and reviewer-enforcement proof are still missing; the canonical GitHub remote `hakhamsolution/ax-audit` is now initialized and `main` exists, so the remaining task is settings capture/enforcement rather than repo bootstrap.
+- Branch-protection and reviewer-enforcement proof are still missing; branch-protection APIs return `403 Upgrade to GitHub Pro or make this repository public` for this private repo on 2026-04-20, so the remaining blocker is now a hosting-plan gate rather than repo bootstrap.
 
 ## 9. Sanitized runtime snapshot (2026-04-20)
 
@@ -168,3 +168,15 @@ This confirms the recovered audit note that actual route logs are richer than th
 Interpretation:
 - current live runtime is using shared platform-level Slack and Telegram credentials rather than isolated AX-only channel-specific credentials
 - this resolves the evidence gap about the live binding shape, but it does not satisfy the intended isolation target
+
+## 10. GitHub platform-gate evidence (2026-04-20)
+
+| Surface | Observed result |
+|---|---|
+| GitHub Actions manual run | `owner-absence-validate` workflow run `24640809639` was created, but the job did not start and GitHub reported: `The job was not started because recent account payments have failed or your spending limit needs to be increased.` |
+| Branch-protection API | `gh api repos/hakhamsolution/ax-audit/branches/main/protection` returned `403 Upgrade to GitHub Pro or make this repository public to enable this feature.` |
+| Rulesets API | `gh api repos/hakhamsolution/ax-audit/rulesets` returned the same `403 Upgrade to GitHub Pro or make this repository public to enable this feature.` |
+
+Interpretation:
+- GitHub Actions runtime is currently blocked by billing/account payment state, not by the workflow YAML shape
+- repository-level branch protection for this private repo is currently blocked by the active GitHub plan

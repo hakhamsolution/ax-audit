@@ -116,12 +116,12 @@ This handoff assumes the following layout in an `ax-audit` (or equivalent) Git r
 │   │   ├── AX_OPERATIONS_POLICY.md             (v4)
 │   │   ├── AX_MIGRATION_EXECUTION.md           (v2, legacy .txt pending conversion — see WB1 note)
 │   │   ├── AX_AVAILABILITY_AND_RBAC.md         (v3)
-│   │   ├── AX_PHASE0_INVENTORY_TEMPLATE.md     (v8)
+│   │   ├── AX_PHASE0_INVENTORY_TEMPLATE.md     (v9)
 │   │   ├── AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md (v1)
 │   │   ├── AX_DATA_TENANCY_AND_RETENTION_POLICY.md (v1)
 │   │   ├── AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY.md (v2)
 │   │   ├── AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN.md (v1)
-│   │   └── AX_SUPERSESSION_AND_NAMING_NOTICE.md (v8)
+│   │   └── AX_SUPERSESSION_AND_NAMING_NOTICE.md (v9)
 │   ├── handoff/
 │   │   └── AX_HANDOFF_TO_CLAUDE_CODE.md
 │   └── archive/
