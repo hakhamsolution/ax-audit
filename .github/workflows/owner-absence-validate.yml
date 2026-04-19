@@ -1,6 +1,7 @@
 name: owner-absence-validate
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - audit/owner_absence.jsonl
