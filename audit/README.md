@@ -41,7 +41,9 @@ Three layers, defense in depth:
 2. Pre-commit hook that rejects modification of existing lines
 3. CI validation that re-checks on every PR
 
-Layers 2 and 3 are implemented as a follow-up task. Until they exist, append-only discipline is enforced by PR review and by this README.
+Layer 3 now has a repository-local implementation via `scripts/validate_owner_absence.py`
+and `.github/workflows/owner-absence-validate.yml`.
+Layer 2 (pre-commit or pre-push local hook enforcement) is still a follow-up task.
 
 ## Schema migrations
 

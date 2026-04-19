@@ -1,0 +1,44 @@
+name: owner-absence-validate
+
+on:
+  pull_request:
+    paths:
+      - audit/owner_absence.jsonl
+      - audit/owner_absence.schema.json
+      - scripts/validate_owner_absence.py
+      - .github/workflows/owner-absence-validate.yml
+  push:
+    paths:
+      - audit/owner_absence.jsonl
+      - audit/owner_absence.schema.json
+      - scripts/validate_owner_absence.py
+      - .github/workflows/owner-absence-validate.yml
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate schema and JSONL
+        run: |
+          python3 scripts/validate_owner_absence.py \
+            --data-file audit/owner_absence.jsonl \
+            --schema-file audit/owner_absence.schema.json
+
+      - name: Enforce append-only against PR base
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          python3 scripts/validate_owner_absence.py \
+            --data-file audit/owner_absence.jsonl \
+            --schema-file audit/owner_absence.schema.json \
+            --against-ref "origin/${{ github.base_ref }}"

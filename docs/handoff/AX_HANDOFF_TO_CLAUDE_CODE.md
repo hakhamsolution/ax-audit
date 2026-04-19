@@ -6,6 +6,32 @@ Audience: Claude Code agent taking over execution for Work Blocks 1 through 5
 
 This document is not a new policy. It is an execution launcher that consolidates the end-to-end plan, KPIs, and human-in-the-loop gates for the remaining AX Phase 0 cycle.
 
+## 0. Handoff state at 2026-04-20
+
+### 0.1 최초 실행 계획 요약 (핵심만)
+
+- WB1-B: `ax-audit` 레포 내 `audit/owner_absence.jsonl` 초기 구조 생성
+- WB1-C: Notion DB `AX 소유자 부재 신고` 생성 또는 수동 생성 후 스키마 v1.0 검증
+- WB1-C Gate: Notion API로 스키마 확인(`--verify`)은 API 가시성 이슈 시 Notion UI 수동 검증으로 전환
+- WB1 완료 조건: Track A/B/C 3개 트랙 완료 + K3/K4 흡수 완료
+
+### 0.2 2026-04-20 기준 진행 상태
+
+- `backlog.md` 상태
+  - `operational_bookmarks.notion_database_id`는 `421644f9-3db4-4f18-b50e-b6e35c019f25`로 최신화됨.
+  - `newly_discovered_gates`에 Notion API 가시성 제한 및 수동 검증 필요 메시지가 누적됨.
+- 실행 산출물
+  - `Makefile`에 `notion-dry`, `notion-verify`, `notion-create` 추가됨.
+  - `scripts/init_notion_owner_absence_db.py`는 `--verify`에서 `live properties are not visible via this integration context.` 수신 시 수동 판독 가이드를 출력하도록 설계됨.
+- 직전 수행 결과 요약
+  - `make notion-create`를 통해 Notion DB 생성은 성공 (`AX 소유자 부재 신고`, id `421644f9-3db4-4f18-b50e-b6e35c019f25`).
+  - 동일 DB 대상 `make notion-verify`는 API로는 속성 목록 노출이 제한되어 `inconclusive`/수동판독 필요로 종료됨.
+- 다음 인수인계 액션(우선순위)
+  - 1) Notion UI에서 DB 전체 속성 펼침 확인: `declaration_id`~`last_updated_at` v1.0 열 모두 존재 여부
+  - 2) 필요 시 수동으로 6개 추천 뷰 생성(스키마 문서 §4.3)
+  - 3) 액세스 권한 확인(원혜연 Full, Approver Read)
+  - 4) 확인 결과를 `backlog.md`에 `cycle_log` 및 `newly_discovered_gates`로 마지막 확정
+
 ---
 
 ## 1. Mission
@@ -65,7 +91,7 @@ Read on every session:
 Consult when the task domain matches:
 - secrets, automation lifecycle, metrics, runtime platform → `docs/active/AX_OPERATIONS_POLICY.md`
 - tenant separation, data classes, retention → `docs/active/AX_DATA_TENANCY_AND_RETENTION_POLICY.md`
-- guard fail-open/fail-closed, borderline handling → `docs/active/AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md` *(not in handoff package at transfer time — see `backlog.md` → `gaps_at_handoff`)*
+- guard fail-open/fail-closed, borderline handling → `docs/active/AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md` *(recovered on 2026-04-20 from `똘똘이mk2` evidence and cross-checked against live host guard markers; full wrapper export is still pending)*
 - Owner-absence log structure, broadcast automation, dual-outage fallback → `docs/active/AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY.md`
 - Owner-absence field schema, validation rules → `docs/active/AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN.md`
 - architectural do-not-resurrect list, core-agent target, ADR 14 → `docs/active/AX_ARCHITECTURE_DECISIONS.md`
@@ -90,12 +116,12 @@ This handoff assumes the following layout in an `ax-audit` (or equivalent) Git r
 │   │   ├── AX_OPERATIONS_POLICY.md             (v4)
 │   │   ├── AX_MIGRATION_EXECUTION.md           (v2, legacy .txt pending conversion — see WB1 note)
 │   │   ├── AX_AVAILABILITY_AND_RBAC.md         (v3)
-│   │   ├── AX_PHASE0_INVENTORY_TEMPLATE.md     (v4)
+│   │   ├── AX_PHASE0_INVENTORY_TEMPLATE.md     (v7)
 │   │   ├── AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md (v1)
 │   │   ├── AX_DATA_TENANCY_AND_RETENTION_POLICY.md (v1)
 │   │   ├── AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY.md (v2)
 │   │   ├── AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN.md (v1)
-│   │   └── AX_SUPERSESSION_AND_NAMING_NOTICE.md (v5)
+│   │   └── AX_SUPERSESSION_AND_NAMING_NOTICE.md (v7)
 │   ├── handoff/
 │   │   └── AX_HANDOFF_TO_CLAUDE_CODE.md
 │   └── archive/

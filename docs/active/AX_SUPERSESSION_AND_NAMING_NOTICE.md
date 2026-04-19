@@ -1,9 +1,11 @@
 # AX_SUPERSESSION_AND_NAMING_NOTICE
 
-Version: 2026-04-18 v5
+Version: 2026-04-20 v7
 Status: mandatory interpretation notice
 Patch record:
 v5 reflects the γ confirmation of Owner-absence log destination and the resulting version bumps in PHASE0 and OWNER_ABSENCE_LOG.
+- v6 reflects the recovered `AX_GUARD_FAILMODE_AND_RUNTIME_POLICY` document and `AX_PHASE0_INVENTORY_TEMPLATE` v5.
+- v7 reflects `AX_PHASE0_INVENTORY_TEMPLATE` v7 after live credential-layout proof and GitHub remote identification.
 
 ## 1. Active-source rule
 
@@ -16,7 +18,7 @@ The active document set with current versions is:
 | AX_OPERATIONS_POLICY | v4 |
 | AX_MIGRATION_EXECUTION | v2 |
 | AX_AVAILABILITY_AND_RBAC | v3 |
-| AX_PHASE0_INVENTORY_TEMPLATE | v4 |
+| AX_PHASE0_INVENTORY_TEMPLATE | v7 |
 | AX_GUARD_FAILMODE_AND_RUNTIME_POLICY | v1 |
 | AX_DATA_TENANCY_AND_RETENTION_POLICY | v1 |
 | AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY | v2 |
