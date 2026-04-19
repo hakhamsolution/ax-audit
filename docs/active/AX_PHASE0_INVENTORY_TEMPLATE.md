@@ -1,6 +1,6 @@
 # AX_PHASE0_INVENTORY_TEMPLATE
 
-Version: 2026-04-20 v7
+Version: 2026-04-20 v8
 Status: populated with current-state evidence; remaining blockers are documented in §10 and §16
 Patch record:
 - v2 incorporated AX_DEPUTY_OWNER_PATCH (2026-04-18 v1 active)
@@ -9,6 +9,7 @@ Patch record:
 - v5 incorporated `똘똘이mk2` runtime evidence: recovered guard policy document, filled concrete Slack channel IDs, and tightened runtime-truth notes
 - v6 incorporated direct Contabo host verification: `openclaw.json`/route-log presence, Telegram group IDs, and runner-guard install markers
 - v7 incorporated live credential-layout evidence: one shared Slack app+bot credential set and one shared Telegram bot token are confirmed in runtime; branch-protection blocker is narrowed to an identified but uninitialized GitHub remote
+- v8 reflects successful GitHub HTTPS bootstrap: canonical remote `hakhamsolution/ax-audit` is initialized and `main` is published; branch-protection remains a settings-proof blocker only
 
 ## 1. Purpose
 
@@ -217,7 +218,7 @@ Live runtime note (2026-04-20):
 | Asset | Why needed | Where expected | Blocking severity | Recovery plan |
 |---|---|---|---|---|
 | historical 57-skill manifest | historical handoff mentions 57-skill classification, but only later `90 -> 65` mapping evidence is currently recovered | archived handoff / legacy repo / install logs | low | recover later for archival completeness; do not block current-state skill classification on it |
-| branch-protection / reviewer enforcement proof | self-approval rule exists in policy, but technical enforcement evidence is missing; canonical remote is now identified as `hakhamsolution/ax-audit`, but the repo is still uninitialized (`initialized=false`, no branches returned on 2026-04-20) so there is no branch object yet to protect | Git hosting config / initialized default branch | high | initialize the remote with the first push/commit, then capture branch-protection settings or settings export during WB2 |
+| branch-protection / reviewer enforcement proof | self-approval rule exists in policy, but technical enforcement evidence is still not captured; canonical remote `hakhamsolution/ax-audit` is now initialized and `main` exists | Git hosting config / repository settings export | high | capture branch-protection settings, reviewer requirement, and merge restriction proof during WB2 |
 
 ## 11. Skill-by-skill classification table
 
@@ -426,4 +427,4 @@ Do not skip this document.
 If someone asks for migration planning without a completed Phase 0 inventory, the correct response is to say the migration is still evidence-incomplete.
 
 As of 2026-04-20, §§4–15.5 are populated from the current recoverable evidence set.
-Phase 0 is still not complete because branch-protection proof is still blocked on the GitHub remote being uninitialized, shared live Slack/Telegram credentials have not yet been remediated into isolated AX credential sets, and a few non-blocking historical archival gaps are still outstanding as listed in §10 and §16.
+Phase 0 is still not complete because branch-protection proof has not yet been captured from GitHub settings, shared live Slack/Telegram credentials have not yet been remediated into isolated AX credential sets, and a few non-blocking historical archival gaps are still outstanding as listed in §10 and §16.

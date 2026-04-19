@@ -1,7 +1,7 @@
 # AX_PHASE0_MIGRATION_ARTIFACTS
 
-Version: 2026-04-20 v3
-Status: Phase 0 execution artifact; mk2 runtime evidence and live credential-layout proof incorporated, but platform gates remain
+Version: 2026-04-20 v4
+Status: Phase 0 execution artifact; mk2 runtime evidence, live credential-layout proof, and GitHub remote bootstrap incorporated, but platform gates remain
 
 ## 1. Purpose
 
@@ -60,7 +60,7 @@ This resolves the inventory gap that previously named the token ownership manife
 | Telegram bot token | Telegram ingress and alert mirror | Owner + Deputy Owner shared | Owner-managed with Operator use | high | R1 | live runtime confirms one shared Telegram bot token across both manager groups; bot-admin custody proof and isolated AX bot binding are still missing |
 | Notion integration token | Notion canonical + ops DBs | Owner + Deputy Owner shared | Owner-managed with limited operator use | medium | R1 | exact integration ownership record not exported |
 | Google OAuth / app credentials | Drive/Docs/Sheets/Slides actions | Owner + Deputy Owner shared | Owner-managed with limited operator use | medium | R1 | live connection inventory missing |
-| GitHub app / PAT / deploy credentials | repo write, CI, workflow ops | Owner + Deputy Owner shared | Owner-managed with Approver oversight | medium | R1 | branch-protection and app-scope proof missing |
+| GitHub app / PAT / deploy credentials | repo write, CI, workflow ops | Owner + Deputy Owner shared | Owner-managed with Approver oversight | medium | R1 | canonical remote is initialized, but branch-protection and app-scope proof are still missing |
 | Codex OAuth runner auth (`~/.codex/auth.json`) | trusted Codex OAuth majors | approved team leads on trusted host | Operator-held runner auth, no broad secret-store role | low | R1 | trusted-runner host inventory not exported |
 | future SOPS age key | secret backend replacement | not yet deployed | Owner + Deputy Owner four-eyes custody | medium | R2 | backend not yet migrated |
 
@@ -112,7 +112,7 @@ Current retirement candidates:
 - `AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md` has been recovered from mk2 evidence and key guard install markers were verified on the live host.
 - The exact historical 57-skill manifest is still missing, but later `90 -> 65` mapping evidence exists and current-state classification no longer depends on the historical count.
 - Slack/Telegram live runtime now proves shared platform-level credentials, but console-level custody proof and isolated AX credential sets are still missing.
-- Branch-protection and reviewer-enforcement proof are still missing; the canonical GitHub remote is identified as `hakhamsolution/ax-audit`, but it is still uninitialized so no protectable branch exists yet.
+- Branch-protection and reviewer-enforcement proof are still missing; the canonical GitHub remote `hakhamsolution/ax-audit` is now initialized and `main` exists, so the remaining task is settings capture/enforcement rather than repo bootstrap.
 
 ## 9. Sanitized runtime snapshot (2026-04-20)
 
