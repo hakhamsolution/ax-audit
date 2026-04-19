@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ax.internal/schemas/owner_absence/1.0",
+  "title": "AX Owner Absence Declaration",
+  "description": "Schema v1.0 for Owner-absence declaration records. See AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN §2-3.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "declaration_id",
+    "schema_version",
+    "declared_by",
+    "declared_by_name",
+    "start_time",
+    "open_ended",
+    "trigger_condition",
+    "response_window_used",
+    "scope",
+    "ratification_status",
+    "linked_actions",
+    "canonical_source",
+    "sync_state",
+    "created_at",
+    "last_updated_at"
+  ],
+  "properties": {
+    "declaration_id": {
+      "type": "string",
+      "pattern": "^OA-\\d{8}-\\d{3}$"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "declared_by": {
+      "type": "string",
+      "enum": ["owner", "deputy_owner"]
+    },
+    "declared_by_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expected_end_time": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "open_ended": {
+      "type": "boolean"
+    },
+    "trigger_condition": {
+      "type": "string",
+      "enum": ["planned_leave", "incapacitated", "unreachable", "explicit_delegation"]
+    },
+    "response_window_used": {
+      "type": "string",
+      "enum": ["general", "emergency", "overnight_non_emergency"]
+    },
+    "scope": {
+      "type": "string",
+      "pattern": "^(full|partial:.+)$"
+    },
+    "ratification_status": {
+      "type": "string",
+      "enum": ["pending", "ratified", "reversed"]
+    },
+    "ratified_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "linked_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "canonical_source": {
+      "type": "string",
+      "enum": ["notion", "git"]
+    },
+    "sync_state": {
+      "type": "string",
+      "enum": ["pending", "synced", "conflict"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "description": "R2: open_ended and expected_end_time are mutually exclusive",
+      "if": { "properties": { "open_ended": { "const": true } } },
+      "then": { "properties": { "expected_end_time": { "type": "null" } } },
+      "else": { "properties": { "expected_end_time": { "type": "string", "format": "date-time" } } }
+    },
+    {
+      "description": "R3: ratification_status and ratified_at consistency",
+      "if": { "properties": { "ratification_status": { "const": "pending" } } },
+      "then": { "properties": { "ratified_at": { "type": "null" } } },
+      "else": { "properties": { "ratified_at": { "type": "string", "format": "date-time" } } }
+    }
+  ]
+}
