@@ -41,3 +41,4 @@ _(empty — populate during WB2; one line per access change with before/after)_
 - 2026-04-18: handoff package assembled; one document gap noted (see gaps_at_handoff).
 - 2026-04-19: WB1-B executed locally in this session: `bash scripts/init_owner_absence_log.sh` confirmed audit canonical files exist (`owner_absence.jsonl` empty, `owner_absence.schema.json`, `README.md`) and script is idempotent.
 - 2026-04-19: WB1-C dry-run executed with `python3 scripts/init_notion_owner_absence_db.py --dry-run` and generated expected Notion DB payload for `AX Owner Absence Declarations`; real Notion API run remains pending because `NOTION_TOKEN` / parent page ID governance requires Owner/Deputy provision.
+- 2026-04-19: WB1-C re-check confirms `python3 scripts/init_notion_owner_absence_db.py --dry-run` now blocks without env vars in this environment; required: `NOTION_PARENT_PAGE_ID`, `NOTION_TOKEN`.
