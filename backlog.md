@@ -19,7 +19,7 @@ _(empty — append as found)_
 - 2026-04-20: `AX_handoff_package_2026-04-18_v2.zip` confirms the active governance model is Decision 15 (`AI-proposer / Human-approver`) rather than the previously restored hybrid Deputy Owner model. Core policy documents and operator instructions must be re-aligned before further execution.
 - 2026-04-20: GitHub Actions billing gate persists after package-v2 realignment. Manual workflow run `24642505500` on commit `dbe1896` failed before job start with the same billing error as earlier runs.
 - 2026-04-20: Slack bot/app concrete values confirmed by 강은구 — Slack app `똘똘`, bot member `U0ARNS78EM9`, current direct endpoint `D0AS8534L01` (DM channel, not shared channel). DM is acceptable for a temporary simple mirror, but if 원혜연 / governance-audit read access becomes necessary, a dedicated private channel should replace it.
-- 2026-04-20: Telegram bot concrete value confirmed by 강은구 — `@똘똘이`. Slack/Telegram 모두 기존 token을 그대로 승계하고 기존 flow는 종료 예정. 따라서 남은 gating item은 "신규 AX token 생성"이 아니라 `기존 flow retirement + Track A secrets exposure verification + SOPS/age migration`이다.
+- 2026-04-20: Telegram bot concrete value corrected by 강은구 — `@SN_ocle_bot`. Slack workspace domain is `eunhyebooboo.slack.com`; this is a workspace identifier, not a channel ID, so existing DM/channel evidence remains the concrete destination evidence until a channel URL or ID is separately confirmed. Slack/Telegram 모두 기존 token을 그대로 승계하고 기존 flow는 종료 예정. 따라서 남은 gating item은 "신규 AX token 생성"이 아니라 `기존 flow retirement + Track A secrets exposure verification + SOPS/age migration`이다.
 - 2026-04-20: Notion API visibility gate — `python3 scripts/init_notion_owner_absence_db.py --verify --database-id 57605a19-e78d-491e-bd29-c397396b99ae` succeeds with
   inconclusive status (`live properties are not visible`) and requires manual UI confirmation of schema v1.0.
 - 2026-04-20: 사용자가 직접 확인한 결과와 최신 Notion 조회 모두 동일: `AX Owner Absence Declarations` DB 스키마에 v1.0 사용자 정의 속성이 반영되지 않고 `Name`(타이틀)만 표시됨. 현재 Notion/connector 모두에서 스키마 부재 상태가 확인됨.
@@ -37,11 +37,12 @@ _(empty — populate during WB2; one line per access change with before/after)_
 - notion_integration_name: _(populate after WB1 Track C)_
 - audit_repo_url: _(populate after WB1 Track B)_
 - owner_absence_log_path_git: `audit/owner_absence.jsonl`
+- slack_workspace_domain: `eunhyebooboo.slack.com`
 - slack_admin_channel: `#000-대표-똘똘이 (C0ASNEFES4C)` — `똘똘이mk2` `approval-workflow.sh`의 L3/L4 승인 경로와 `heartbeat` 기본 escalation channel 기준
 - slack_bot_app: `똘똘` (bot member/user id `U0ARNS78EM9`)
 - slack_bot_dm_endpoint: `D0AS8534L01` — 강은구 ↔ 똘똘 봇 DM. 단순 mirror/intake로는 사용 가능하지만 shared read에는 부적합
 - telegram_admin_endpoint: `ABEL (-1003286171878)`, `은혜그룹 (-1003881200687)` — live host `openclaw.json`/cron evidence 기준; `은혜그룹`에서는 archive topic `92`도 관측됨
-- telegram_bot_username: `@똘똘이`
+- telegram_bot_username: `@SN_ocle_bot`
 
 ## gaps_at_handoff
 
@@ -64,7 +65,7 @@ Pending definition. Will be codified at first real Owner-absence scenario trigge
 ## cycle_log
 - 2026-04-20: `AX_handoff_package_2026-04-18_v2.zip`를 읽고 active policy baseline을 package v2로 재설정함. Core docs (`AX_ARCHITECTURE_DECISIONS`, `AX_AVAILABILITY_AND_RBAC`, `AX_OPERATIONS_POLICY`, `AX_SUPERSESSION_AND_NAMING_NOTICE`, `AX_PHASE0_INVENTORY_TEMPLATE`, `AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY`, handoff, CLAUDE/AGENTS)를 package 기준으로 동기화함.
 - 2026-04-20: package-v2 기준선 적용 후 잃어버린 current-state evidence를 `AX_PHASE0_INVENTORY_TEMPLATE`에 재병합했고, 보조 문서/스크립트의 `four-eyes` 잔재와 `v2` 참조를 현재 Decision 15 / γ gate / v3 기준으로 정리함.
-- 2026-04-20: 강은구가 Slack/Telegram concrete values를 제공함 — Slack app `똘똘`, bot member `U0ARNS78EM9`, DM endpoint `D0AS8534L01`, Telegram bot `@똘똘이`. 기존 token 재사용과 기존 flow 종료 예정이 확인되어 credential blocker 정의를 `new token creation`에서 `retirement + exposure verification + SOPS migration`으로 재정의함.
+- 2026-04-20: 강은구가 Slack/Telegram concrete values를 제공함 — Slack app `똘똘`, bot member `U0ARNS78EM9`, DM endpoint `D0AS8534L01`, Slack workspace `eunhyebooboo.slack.com`, Telegram bot `@SN_ocle_bot`. Slack workspace 값은 channel ID가 아니므로 기존 DM/channel 증거는 유지하고, bot identifier만 최신값으로 교체함. 기존 token 재사용과 기존 flow 종료 예정이 확인되어 credential blocker 정의를 `new token creation`에서 `retirement + exposure verification + SOPS migration`으로 재정의함.
 - 2026-04-20: `docs/active/AX_PHASE0_INVENTORY_TEMPLATE.md`를 현재 회수 가능한 증거 기준으로 정리 완료. §§4–15.5는 채워졌고, 미복구 자산/라이브 증빙 부족만 §10·§11·§16에 blocker로 남김.
 - 2026-04-20: Phase 0 필수 산출물로 `docs/active/AX_PHASE0_MIGRATION_ARTIFACTS.md`, `docs/active/AX_PHASE0_BASELINE_METRICS.md`를 추가해 old-to-new mapping, token ownership, secret rotation checklist, rollback/retirement checklist, baseline metrics 파일을 생성함. 다만 라이브 runtime export/브랜치 보호 증빙/실제 metric baseline 값은 인간 권한이 필요해 미완료 상태로 남김.
 - 2026-04-20: 로컬 검증/자동화 경로 추가 — `scripts/validate_owner_absence.py`, `scripts/sync_owner_absence_phase_a.py`, `make owner-absence-validate`, `make phasea-dry-run`, `.github/workflows/owner-absence-validate.yml`. 현재는 로컬 dry-run/CI 준비까지 완료했고, 실제 Slack/Telegram fanout은 라이브 토큰 및 destination ID가 확보될 때만 활성화 가능함.

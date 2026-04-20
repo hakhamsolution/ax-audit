@@ -1,7 +1,7 @@
 # AX_PHASE0_INVENTORY_TEMPLATE
 
-Version: 2026-04-20 v11
-Status: populated with current-state evidence and re-aligned to package-v2 Decision 15 baseline; representative-provided Slack/Telegram cutover details incorporated; remaining blockers are documented in §10 and §16
+Version: 2026-04-20 v12
+Status: populated with current-state evidence and re-aligned to package-v2 Decision 15 baseline; representative-provided Slack/Telegram cutover details incorporated and corrected; remaining blockers are documented in §10 and §16
 Patch record:
 - v2 incorporated AX_DEPUTY_OWNER_PATCH (2026-04-18 v1 active)
 - v3 filled §15 with confirmed values, added §15.5 (AI agents), added §15.6 (immediate follow-up actions)
@@ -13,6 +13,7 @@ Patch record:
 - v9 incorporates GitHub platform-gate evidence: Actions run failure is caused by account billing, and branch-protection APIs for this private repo currently return plan-gated 403
 - v10 re-aligns the inventory to `AX_handoff_package_2026-04-18_v2.zip`: Decision 15 terminology restored, proposer-approver model replaces hybrid/self-approval wording, and previously recovered runtime evidence is preserved
 - v11 incorporates representative-provided Slack/Telegram concrete values: Slack app `똘똘`, bot member `U0ARNS78EM9`, DM endpoint `D0AS8534L01`, Telegram bot `@똘똘이`, and the decision to reuse existing tokens while retiring the prior flow
+- v12 corrects those concrete values by distinguishing Slack workspace `eunhyebooboo.slack.com` from channel-level evidence and by updating the Telegram bot identifier to `@SN_ocle_bot`
 
 ## 1. Purpose
 
@@ -224,7 +225,7 @@ Live runtime note (2026-04-20):
 |---|---|---|---|---|
 | historical 57-skill manifest | historical handoff mentions 57-skill classification, but only later `90 -> 65` mapping evidence is currently recovered | archived handoff / legacy repo / install logs | low | recover later for archival completeness; do not block current-state skill classification on it |
 | GitHub billing / branch-protection proof | proposer-approver technical enforcement is currently unavailable on the present GitHub setup: Actions runs are billing-gated and branch-protection/ruleset APIs returned `403 Upgrade to GitHub Pro or make this repository public` on 2026-04-20 | GitHub billing + hosting plan / repository settings | high | settle billing, then either upgrade plan, move governance repo to a tier that supports private-repo protection, or make the repo public if policy permits; only then capture settings proof during WB2 |
-| Slack/Telegram prior-flow retirement proof | representative confirmed existing tokens will be reused, but AX cutover is not complete until the previous flow is actually retired | Slack / Telegram operational runtime | medium | complete prior-flow shutdown, confirm only AX path remains, then store token custody in SOPS+age |
+| Slack/Telegram prior-flow retirement proof | representative confirmed existing tokens will be reused, but AX cutover is not complete until the previous flow is actually retired; latest manual note distinguishes Slack workspace `eunhyebooboo.slack.com` from still-unconfirmed channel-level target | Slack / Telegram operational runtime | medium | complete prior-flow shutdown, confirm only AX path remains, confirm the final Slack channel URL/ID, then store token custody in SOPS+age |
 
 ## 11. Skill-by-skill classification table
 
@@ -392,7 +393,7 @@ Every AI agent that can read secrets, write repos/docs, or trigger privileged ac
 1. Complete WB2 access realignment for 원혜연: keep business-side write paths where required, but reduce governance surfaces to read or approval-only where policy demands.
 2. Establish and preserve an independent Claude Code reviewer session for γ gate actions; reviewer and proposer must remain distinct sessions with distinct context.
 3. Resolve GitHub hosting blockers so PR-only enforcement can be proven technically: current blockers are private-repo protection plan gate and Actions billing gate.
-4. Complete Slack/Telegram cutover using the existing tokens (`똘똘` / `@똘똘이`), retire the prior flow, and run Track A verification to decide whether rotation is required before AX cutover.
+4. Complete Slack/Telegram cutover using the existing tokens (`똘똘` / `@SN_ocle_bot`), retire the prior flow, confirm the final Slack channel URL/ID under workspace `eunhyebooboo.slack.com`, and run Track A verification to decide whether rotation is required before AX cutover.
 5. Continue Phase A owner-absence automation build only under the proposer-approver pipeline.
 6. Keep the Notion operational DB title mismatch (`AX 소유자 부재 신고` vs package-v2 canonical English title) as an explicit reconciliation item rather than silently renaming it.
 

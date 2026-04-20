@@ -1,7 +1,7 @@
 # AX_PHASE0_MIGRATION_ARTIFACTS
 
-Version: 2026-04-20 v5
-Status: Phase 0 execution artifact; mk2 runtime evidence, live credential-layout proof, GitHub remote bootstrap, and GitHub platform-gate evidence incorporated
+Version: 2026-04-20 v6
+Status: Phase 0 execution artifact; mk2 runtime evidence, live credential-layout proof, GitHub remote bootstrap, GitHub platform-gate evidence, and latest Slack/Telegram identifier corrections incorporated
 
 ## 1. Purpose
 
@@ -58,7 +58,7 @@ This resolves the inventory gap that previously named the token ownership manife
 |---|---|---|---|---|---|---|
 | gateway token | OpenClaw ingress / Gateway UI | Owner + Deputy Owner shared | Owner-managed with Approver oversight | medium | R1 | live runtime path is known, but console-level custody proof/export is not captured |
 | Slack bot/app tokens | Slack ingress, reports, alerts | Owner + Deputy Owner shared | Owner-managed with Operator use | high | R1 | live runtime confirms one shared Slack bot token + one shared Slack app token; 강은구 confirmed AX will reuse the existing token set (`똘똘`, bot member `U0ARNS78EM9`) after prior-flow retirement. Remaining blocker is retirement completion, Track A exposure verification, and SOPS+age migration rather than new token creation |
-| Telegram bot token | Telegram ingress and alert mirror | Owner + Deputy Owner shared | Owner-managed with Operator use | high | R1 | live runtime confirms one shared Telegram bot token across both manager groups; 강은구 confirmed AX will reuse the existing `@똘똘이` token after prior-flow retirement. Remaining blocker is retirement completion, Track A exposure verification, and SOPS+age migration rather than new token creation |
+| Telegram bot token | Telegram ingress and alert mirror | Owner + Deputy Owner shared | Owner-managed with Operator use | high | R1 | live runtime confirms one shared Telegram bot token across both manager groups; 강은구 corrected the current bot identifier to `@SN_ocle_bot` and confirmed AX will reuse the existing token after prior-flow retirement. Remaining blocker is retirement completion, Track A exposure verification, and SOPS+age migration rather than new token creation |
 | Notion integration token | Notion canonical + ops DBs | Owner + Deputy Owner shared | Owner-managed with limited operator use | medium | R1 | exact integration ownership record not exported |
 | Google OAuth / app credentials | Drive/Docs/Sheets/Slides actions | Owner + Deputy Owner shared | Owner-managed with limited operator use | medium | R1 | live connection inventory missing |
 | GitHub app / PAT / deploy credentials | repo write, CI, workflow ops | Owner + Deputy Owner shared | Owner-managed with Approver oversight | medium | R1 | canonical remote is initialized, but branch-protection is plan-gated for this private repo and Actions execution is billing-gated until account settlement |
@@ -112,7 +112,7 @@ Current retirement candidates:
 
 - `AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md` has been recovered from mk2 evidence and key guard install markers were verified on the live host.
 - The exact historical 57-skill manifest is still missing, but later `90 -> 65` mapping evidence exists and current-state classification no longer depends on the historical count.
-- Slack/Telegram live runtime now proves shared platform-level credentials. 강은구 confirmed AX will reuse the existing tokens (`똘똘` / `@똘똘이`) rather than minting new ones, so the remaining blocker is prior-flow retirement, exposure-history verification, and SOPS+age migration.
+- Slack/Telegram live runtime now proves shared platform-level credentials. 강은구 confirmed AX will reuse the existing tokens (`똘똘` / `@SN_ocle_bot`) rather than minting new ones, so the remaining blocker is prior-flow retirement, exposure-history verification, and SOPS+age migration.
 - Branch-protection and reviewer-enforcement proof are still missing; branch-protection APIs return `403 Upgrade to GitHub Pro or make this repository public` for this private repo on 2026-04-20, so the remaining blocker is now a hosting-plan gate rather than repo bootstrap.
 
 ## 9. Sanitized runtime snapshot (2026-04-20)
@@ -140,11 +140,11 @@ Interpretation:
 |---|---|
 | Telegram `ABEL` | group id `-1003286171878`; confirmed in live cron/job messages as `Telegram 그룹 'ABEL'` |
 | Telegram `은혜그룹` | group id `-1003881200687`; confirmed in live cron/job messages as `Telegram 그룹 '은혜그룹'` |
-| Telegram bot identity | 강은구 confirmed bot handle `@똘똘이`; existing token will be reused for AX after prior-flow retirement |
+| Telegram bot identity | 강은구 corrected bot handle to `@SN_ocle_bot`; existing token will be reused for AX after prior-flow retirement |
 | Telegram topic evidence | `은혜그룹` config includes topic `92` as an archive topic; cron session keys also reference topic `1` for archive runs |
 | Telegram route binding | live `openclaw.json` binding routes Telegram channel traffic to `main` |
 | Slack key bindings | live `openclaw.json` bindings align with recovered key Slack channel IDs such as `C0ASNEFES4C`, `C0ASGQQFP8W`, `C0ASM1RBWBX` |
-| Slack bot identity | 강은구 confirmed Slack app `똘똘`, bot member `U0ARNS78EM9`, and current DM endpoint `D0AS8534L01`; existing token will be reused for AX after prior-flow retirement |
+| Slack workspace and bot identity | 강은구 confirmed Slack workspace `eunhyebooboo.slack.com`, app `똘똘`, bot member `U0ARNS78EM9`, and current DM endpoint `D0AS8534L01`; `eunhyebooboo.slack.com` is a workspace identifier rather than a channel ID, so current DM/channel evidence remains the concrete destination evidence until a channel URL or ID is separately confirmed |
 
 ### 9.3 Guard install evidence
 
