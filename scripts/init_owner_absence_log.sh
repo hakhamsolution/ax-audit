@@ -12,7 +12,7 @@
 #   - creates audit/owner_absence.jsonl as an empty file (never overwrites if present)
 #   - creates audit/owner_absence.schema.json with the schema v1.0 JSON Schema
 #   - creates audit/README.md with usage notes
-#   - stages the files with git add (does NOT commit — commit is a four-eyes action)
+#   - stages the files with git add (does NOT commit — commit remains approval-gated)
 #
 # Safety:
 #   - refuses to run if audit/owner_absence.jsonl already exists and is non-empty
@@ -171,7 +171,7 @@ cat > "${README_FILE}" <<'MARKDOWN'
 
 This directory hosts the **Git canonical** of the Owner-absence declaration log for the AX system.
 
-This is one of two canonical stores. The other is the Notion database `AX Owner Absence Declarations`. Both canonicals must contain the same records. See `AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v2` for the consistency rules.
+This is one of two canonical stores. The other is the Notion database `AX Owner Absence Declarations`. Both canonicals must contain the same records. See `AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v3` for the consistency rules.
 
 ## Files
 
@@ -186,7 +186,7 @@ Only Owner or Deputy Owner may write. Automation may sync from Notion.
 1. Construct the record conforming to `owner_absence.schema.json`.
 2. Append as a single JSONL line to `owner_absence.jsonl`.
 3. Commit via a branch + PR. Direct pushes to main are disallowed.
-4. PR is reviewed by the non-proposer (self-approval rule).
+4. PR is approved by the human approver after AI proposal review (proposer-approver separation).
 5. After merge, verify the Notion canonical contains the same record.
 
 ## Updating an existing declaration
@@ -216,7 +216,7 @@ Layer 2 (pre-commit or pre-push local hook enforcement) is still a follow-up tas
 
 ## Schema migrations
 
-A schema version bump (e.g. 1.0 → 1.1) is a four-eyes-required action per `AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN §7`. Migration notes are appended here.
+A schema version bump (e.g. 1.0 → 1.1) is a γ gate action per `AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN §7`. Migration notes are appended here.
 
 ### Migration log
 
@@ -241,7 +241,7 @@ Next steps (run manually so the commit is attributable):
 
   git commit -m "audit: initialize owner-absence declaration log (schema v${SCHEMA_VERSION})"
   git push origin <your branch>
-  open a PR and request review from the non-proposer
+  open a PR and request approval from 강은구
 
 Schema version initialized: ${SCHEMA_VERSION}
 Files ready:

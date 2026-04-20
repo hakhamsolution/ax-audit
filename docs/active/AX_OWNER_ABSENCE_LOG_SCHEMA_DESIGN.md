@@ -1,7 +1,7 @@
 # AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN
 
 Version: 2026-04-18 v1
-Status: implementation design for AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v2 §4
+Status: implementation design for AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v3 §4
 Purpose: define the concrete schema for both canonical stores (Notion database and Git append-only JSONL file) so they can be initialized and kept aligned.
 
 This document is the canonical implementation reference. The two canonicals must conform to it identically.
@@ -12,7 +12,7 @@ This document is the canonical implementation reference. The two canonicals must
 
 `schema_version`: **1.0**
 
-Any change to this schema is an architecture-adjacent action per AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY §10 and requires four-eyes approval.
+Any change to this schema is an architecture-adjacent action per AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY §10 and requires γ gate approval (AI proposal + independent AI review + 강은구 approval).
 
 ---
 
@@ -112,8 +112,8 @@ Notion's built-in "Created by" and "Last edited by" properties are also enabled 
 
 ### 4.4 Access control
 Per AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY §9. Implement in Notion by:
-- sharing the database page with Owner and Deputy Owner as `Full access`
-- sharing with Approver and governance-audit role accounts as `Can read`
+- granting write access to 강은구 and authorized sync automation only
+- granting read access to 강은구, 원혜연, and governance-audit
 - not sharing with Requester or Viewer role accounts
 
 ---
@@ -141,7 +141,7 @@ Three layers of enforcement, defense in depth:
 **Layer 1 — repository protection**
 - the `audit/` directory is on a protected branch
 - direct pushes to main are disallowed; all changes go through PR
-- PR requires review by the non-proposer (self-approval rule applied at Git level)
+- PR requires approval by the human approver after AI proposal review (proposer-approver separation applied at Git level)
 
 **Layer 2 — pre-commit hook**
 - validates that the diff for `audit/owner_absence.jsonl` is append-only (no existing lines modified or removed)
@@ -184,7 +184,7 @@ If a declaration exists in both canonicals with different values for any immutab
 
 When schema_version increments (e.g. 1.0 → 1.1 or 2.0):
 
-1. The change is proposed as a four-eyes-required action (both Owner and Deputy Owner approve).
+1. The change is proposed as a γ gate action (AI proposal + independent AI review + 강은구 approval).
 2. This design document is updated first and becomes v2 (or equivalent).
 3. Both canonicals are migrated in the same change window.
 4. All existing records retain their original `schema_version` value. New records use the new version.
@@ -209,6 +209,6 @@ The first declaration must not be made until the Notion database exists and the 
 
 This document defines the schema. It does not define the broadcast automation (see policy §6) or the append-only enforcement mechanics beyond the three-layer sketch in §5.4.
 
-If you are asked to add a field, do not silently edit this document. Propose a schema version bump, obtain four-eyes approval, and migrate both canonicals together.
+If you are asked to add a field, do not silently edit this document. Propose a schema version bump, obtain γ gate approval, and migrate both canonicals together.
 
 If you are asked to use a different store as canonical (e.g. replacing Notion or Git), re-open AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY first and only update this schema document after that policy is revised.

@@ -1,200 +1,172 @@
 # AX_AVAILABILITY_AND_RBAC
 
-Version: 2026-04-18 v3
+Version: 2026-04-18 v4
 Status: focused operating supplement, single source of truth for the action-to-role matrix
 Supersession:
 This document is part of the active AX document set and supersedes AX_AGENT_SYSTEM_FINAL (2026-04-18) where topics overlap.
-v3 incorporates AX_DEPUTY_OWNER_PATCH (2026-04-18 v1 active).
+v4 supersedes v3 Deputy Owner hybrid model per Owner decision 2026-04-18.
+v3 (and the patch AX_DEPUTY_OWNER_PATCH) remain as audit record in `docs/archive/patches/`.
 
 ## 1. Purpose
 
-This document exists because availability and RBAC were identified as unresolved high-risk items.
-It narrows those two topics into explicit working policy.
-
-This document is the canonical source for the action-to-role matrix.
+This document defines RBAC and availability for the AX system.
+It is the canonical source for the action-to-role matrix.
 Other documents must reference §5.3 instead of restating the matrix.
 
 ## 2. Availability topology stance
 
-Working topology:
-- single active GoClaw control-plane instance
-- documented rollback path
-- isolated legacy fallback path
-- no active-active multi-brain orchestration
-
-Reason:
-The current team size and operating burden do not justify immediate multi-primary orchestration complexity.
-Reliability comes first from restartability, observability, backup, and disciplined fallback.
+Working topology: single active GoClaw control-plane instance; documented rollback path; isolated legacy fallback path; no active-active multi-brain orchestration. Reliability comes first from restartability, observability, backup, and disciplined fallback.
 
 ## 3. Minimum required availability controls
 
-Required:
-- service healthcheck
-- auto-restart
-- reverse proxy health monitoring
-- config backup
-- daily state backup
-- weekly recovery drill
-- incident log
-- rollback procedure
-- fallback intake procedure
+Required: service healthcheck; auto-restart; reverse proxy health monitoring; config backup; daily state backup; weekly recovery drill; incident log; rollback procedure; fallback intake procedure.
 
 ## 4. Fallback decision rule
 
-If GoClaw is unavailable for 10 minutes or more:
-- Operator declares degraded mode
-- public ingress is paused or redirected
-- only pre-approved fallback channels are used
-- no new production promotion actions occur
-- legacy bot activation is allowed only if token/channel isolation is confirmed
+If GoClaw is unavailable for 10 minutes or more: Operator declares degraded mode; public ingress is paused or redirected; only pre-approved fallback channels are used; no new production promotion actions occur; legacy bot activation is allowed only if token/channel isolation is confirmed.
 
-## 5. RBAC model
+## 5. RBAC model — AI-proposer / Human-approver
 
-### 5.1 Roles
+### 5.1 Core design principle
 
-Mandatory roles:
+Every privileged action requires a **proposer** and an **approver** who are distinct entities. In the target working model:
+
+- **Proposer** = AI agent (Codex, Claude Code, or other automation agent)
+- **Approver** = 강은구 (Owner, human)
+
+The proposer drafts the action with full context, policy references, and expected impact. The approver reviews and permits execution. AI and human contribute **different kinds of judgment** (rule application vs. situational judgment), and together satisfy the separation-of-duties intent that self-approval rules were designed to enforce.
+
+This replaces the Deputy Owner hybrid model (v3). The self-approval forbidden rule is replaced with the broader **proposer-approver separation rule** (§5.4).
+
+### 5.2 Roles
+
+Mandatory (by position, even if some are dormant in daily operation):
 - Owner
-- Deputy Owner
+- Deputy Owner (dormant — authority held but not exercised in normal operation)
 - Operator
 - Approver
 - Requester
 
-Optional role:
-- Viewer (read-only)
+Optional role: Viewer (read-only).
 
-Deputy Owner is mandatory in any environment with fewer than three Owner-class humans.
-
-Deputy Owner is not a backup Owner only.
-Deputy Owner has defined peacetime authority and additional authority that activates only when Owner-absence is formally declared. See §5.5.
-
-### 5.2 Action classes
-
-Action classes:
-- request_work
-- view_status
-- inspect_logs
-- read_audit_log
-- restart_service
-- rollback_service
-- rotate_secret_routine (Class R1)
-- rotate_secret_backend_or_master (Class R2)
-- promote_automation
-- demote_automation
-- change_guard_rule
-- change_secret_backend
-- retire_legacy_component
-- change_architecture_definition
-
-Secret class definitions:
-- Class R1 — routine secret rotation: bot tokens, app tokens, third-party API keys with documented rotation procedure; any secret whose rotation does not change the secret architecture.
-- Class R2 — backend or master secret operation: secret backend standard change, master encryption path change, age key replacement, any operation that affects how secrets are stored, encrypted, or accessed.
+Roles held by AI agents (not humans):
+- Proposer — default role for AI agents authorized to suggest privileged actions
+- Reviewer — independent AI role used in γ cross-check (§5.3) for high-risk action classes
 
 ### 5.3 Canonical action-to-role matrix
 
-| Action class | Owner | Deputy Owner (peacetime) | Deputy Owner (Owner-absence declared) | Operator | Approver |
-|---|---|---|---|---|---|
-| request_work | yes | yes | yes | yes | yes |
-| view_status | yes | yes | yes | yes | yes |
-| inspect_logs | yes | yes | yes | yes | no |
-| read_audit_log | yes | yes | yes | yes | yes |
-| restart_service | yes | yes | yes | yes | no |
-| rollback_service | yes | yes | yes | yes | no |
-| rotate_secret_routine (R1) | yes | yes | yes | yes | no |
-| rotate_secret_backend_or_master (R2) | yes, four-eyes required | no | yes, post-hoc Owner review required | no | no |
-| promote_automation | yes (no self-approval) | yes (no self-approval) | yes | no | yes (no self-approval) |
-| demote_automation | yes (no self-approval) | yes (no self-approval) | yes | no | yes (no self-approval) |
-| change_guard_rule | yes, four-eyes required | no | yes, post-hoc Owner review required | no | no |
-| change_secret_backend | yes, four-eyes required | no | yes, post-hoc Owner review required | no | no |
-| retire_legacy_component | yes, four-eyes required | no | yes, post-hoc Owner review required | no | no |
-| change_architecture_definition | yes, four-eyes required | no | no — wait for Owner return and re-decide | no | no |
+| Action class | Proposer | Reviewer (independent AI) | Approver (human) | Notes |
+|---|---|---|---|---|
+| request_work | human or AI | — | 강은구 or automation policy | routine intake |
+| view_status | — | — | any role with read access | no approval needed |
+| inspect_logs | — | — | Owner, Operator | read action |
+| read_audit_log | — | — | Owner, Approver, Operator | read action |
+| restart_service | AI agent or Operator | — | 강은구 | emergency restart by Operator allowed under documented runbook |
+| rollback_service | AI agent or Operator | — | 강은구 | emergency rollback by Operator allowed under documented runbook |
+| rotate_secret_routine (R1) | AI agent | — | 강은구 | documented procedure required |
+| rotate_secret_backend_or_master (R2) | AI agent | **yes — γ gate** | 강은구 | proposer + independent reviewer + Owner approval |
+| promote_automation | AI agent | — | 강은구 | proposer-approver separation automatic |
+| demote_automation | AI agent | — | 강은구 | exception: active-failure containment demotion may proceed without approval and be reviewed afterward |
+| change_guard_rule | AI agent | **yes — γ gate** | 강은구 | |
+| change_secret_backend | AI agent | **yes — γ gate** | 강은구 | |
+| retire_legacy_component | AI agent | **yes — γ gate** | 강은구 | |
+| change_architecture_definition | AI agent | **yes — γ gate** | 강은구 | |
 
-Notes:
-- "four-eyes required" = the action requires explicit approval from a second Owner-class actor. Deputy Owner counts as the second actor for Owner-initiated four-eyes actions.
-- "post-hoc Owner review required" = action may proceed during declared Owner-absence; Owner must review and ratify or reverse within 72 hours of return.
-- "no self-approval" = the human who proposed the promotion or demotion may not be the human who approves it.
+#### 5.3.1 γ gate meaning
 
-### 5.4 Self-approval rule
+For action classes marked γ gate in the Reviewer column:
 
-A human may not approve a promotion or demotion they themselves proposed.
+1. A proposer AI agent drafts the change as a Pull Request with diff, rationale, and references to the active policy documents.
+2. An **independent AI instance** (distinct session, distinct context, preferably different model family) reviews the PR specifically for policy conformance, do-not-resurrect list violations, scope freeze violations, schema alignment, and tenant separation impact. The reviewer posts a review comment marking the PR as pass / borderline / fail with policy citations.
+3. 강은구 reviews the PR and the AI reviewer's comment, then approves or rejects.
 
-This rule applies regardless of role and overrides any otherwise-permitted action grant.
+The reviewer cannot be the proposer. The reviewer cannot be 강은구. AI agents declared to one role remain in that role for a given action to prevent collusion-by-convenience.
 
-If only one Owner-class actor is available (Owner-absence in effect and no Deputy):
-- promotion and demotion actions are paused, or
-- the action is queued and executed only after a second actor returns,
+#### 5.3.2 Agent role assignments (working default)
 
-except for demotions required to contain an active failure, which proceed and are reviewed afterward.
+- Proposer: Codex (primary executor in current session)
+- Reviewer: Claude Code (independent session)
 
-### 5.5 Owner-absence declaration
+Other AI agents (n8n workflows, future automation) are added to AX_PHASE0_INVENTORY_TEMPLATE §15.5 with role declaration before granting any privileged access.
 
-Owner-absence is a declared, logged state. It is not inferred from response delay alone.
+### 5.4 Proposer-approver separation rule
 
-Trigger conditions:
-- Owner is on planned leave longer than the agreed response window.
-- Owner is medically or otherwise incapacitated.
-- Owner has been unreachable beyond the agreed response window.
-- Owner has explicitly delegated authority for a defined window.
+No action of class `promote_automation`, `demote_automation`, or any γ gate class may be both proposed and approved by the same entity.
+
+Structurally enforced by the AI-proposer / Human-approver model: AI cannot approve, and human cannot propose privileged actions automatically without going through the proposer pipeline.
+
+If a human directly modifies a privileged configuration bypassing the AI proposer pipeline, this counts as a **manual override** and must be logged as an audit incident by governance-audit with explicit rationale.
+
+### 5.5 Owner-absence
+
+Since 강은구 is the sole approver in the working model, Owner-absence means the approval pipeline is paused.
+
+- All pending AI proposals enter a queue during Owner-absence.
+- No new γ gate action may be completed.
+- No R2 secret operation may be completed.
+- No promote_automation or demote_automation (except active-failure containment demotion) may be completed.
 
 Agreed response windows:
 - general operations: 4 working hours
 - emergency operations (active incident, security event, token collision, public-channel outage): 60 minutes
 - overnight non-emergency: next working block
 
-A reactive Owner-absence declaration is permitted only after the relevant window has elapsed without Owner response.
+#### 5.5.1 Deputy Owner dormant authority
 
-Required attributes of declaration:
-- declaration ID
-- declared by (Owner if pre-planned, Deputy Owner if reactive)
-- start time
-- expected end time (or "open-ended pending review")
-- trigger condition
-- scope (full or partial)
-- log destination
+원혜연 holds Deputy Owner role formally. The authority exists on paper but is not exercised in daily operation. It is reserved for exceptional situations:
 
-Termination:
-- Owner formally returns and acknowledges the audit log of actions taken during absence, or
-- a successor Owner is named.
+- extreme emergency where 강은구 is unreachable beyond the emergency window AND the system is in an active-failure state that cannot be contained without an approver
+- documented delegation by 강은구 in advance for a defined window
 
-Audit:
-- All actions taken under Owner-absence must be tagged in the central audit log with the declaration ID.
-- There is no separate continuity log.
+Activation procedure is **pending definition** and must be decided at the first real Owner-absence scenario, then codified. Until then, Owner-absence default behavior is "queue pending proposals, no elevated activation."
 
-Post-hoc Owner review:
-- Owner must review and ratify or reverse every "post-hoc Owner review required" action within 72 hours of return.
+This dormant state is intentional: 원혜연's primary role is business work assignment (see PHASE0 §15.1), not system governance.
 
-### 5.6 Two-person team minimum assignment
+#### 5.5.2 Required attributes of Owner-absence declaration
 
-In a two-person environment:
-- Owner and Deputy Owner are never the same human.
-- Both humans hold Approver and Operator roles so the self-approval and operational continuity rules are enforceable.
-- Channel mapping (§6) must reflect that both humans can act in operator and approval channels.
+declaration ID; declared by (Owner if pre-planned; AI agent that detected unreachability with independent verification if reactive); start time; expected end time or "open-ended pending review"; trigger condition; scope; log destination (see AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY).
+
+#### 5.5.3 Post-hoc review
+
+When 강은구 returns, every queued proposal is processed in order. Queue content is preserved in the audit log.
+
+### 5.6 Role assignment (actual)
+
+Confirmed 2026-04-18:
+- Owner: 강은구
+- Deputy Owner (dormant): 원혜연
+- Approver: 강은구 (operational); 원혜연 (formal, not exercised)
+- Operator: 강은구 (primary); 원혜연 (available, not primary)
+- Business Work Partner: 원혜연 (work assignment accept/reject/modify flow; out of AX governance scope)
+
+AI roles (working default, expandable per §15.5):
+- Proposer: Codex
+- Reviewer: Claude Code
 
 ## 6. Channel mapping principle
 
-- casual manager chat channels: Requester only
-- operator channels: Operator actions allowed
-- approval channels: Approver actions allowed
-- owner-only admin path: secret backend, guard-rule model, legacy retirement, architecture definition change
-- no secret-changing action in public request channels
+Casual manager chat channels: Requester only. Operator channels: Operator actions allowed. Approval channels: 강은구 exclusive for Approver actions; 원혜연 has read access for situational awareness. Owner-only admin path: secret backend, guard-rule model, legacy retirement, architecture definition change. No secret-changing action in public request channels.
 
 Concrete channel/tool mapping must be produced in the Phase 0 inventory.
 
 ## 7. Audit rule
 
 All non-requester privileged actions must be attributable to:
-- actor
-- role
-- time
+- proposer (AI agent identifier)
+- reviewer if applicable (AI agent identifier)
+- approver (human)
+- time (proposed, reviewed, approved, executed timestamps)
 - target
-- action
+- action class
 - result
-- declaration ID if action was taken under declared Owner-absence
+- declaration ID if action taken under declared Owner-absence
 
 ## 8. Review rule
 
 RBAC must be reviewed:
-- on every new manager addition,
-- on every channel expansion,
-- every quarter minimum.
+- on every new manager addition
+- on every channel expansion
+- on every new AI agent introduction (PHASE0 §15.5)
+- every quarter minimum
 
-The Deputy Owner mandatory rule must be re-evaluated when team grows to three or more Owner-class humans.
+The proposer-approver separation rule and γ gate assignments must be re-evaluated annually or when a team member is added.

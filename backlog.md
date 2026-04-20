@@ -16,11 +16,13 @@ _(empty — append as found)_
 
 ## newly_discovered_gates
 
+- 2026-04-20: `AX_handoff_package_2026-04-18_v2.zip` confirms the active governance model is Decision 15 (`AI-proposer / Human-approver`) rather than the previously restored hybrid Deputy Owner model. Core policy documents and operator instructions must be re-aligned before further execution.
 - 2026-04-20: Notion API visibility gate — `python3 scripts/init_notion_owner_absence_db.py --verify --database-id 57605a19-e78d-491e-bd29-c397396b99ae` succeeds with
   inconclusive status (`live properties are not visible`) and requires manual UI confirmation of schema v1.0.
 - 2026-04-20: 사용자가 직접 확인한 결과와 최신 Notion 조회 모두 동일: `AX Owner Absence Declarations` DB 스키마에 v1.0 사용자 정의 속성이 반영되지 않고 `Name`(타이틀)만 표시됨. 현재 Notion/connector 모두에서 스키마 부재 상태가 확인됨.
 - 2026-04-20: 부모 페이지 `은혜그룹` 아래에 Owner-absence DB가 2개(`57605a19-e78d-491e-bd29-c397396b99ae`, `421644f9-3db4-4f18-b50e-b6e35c019f25`) 존재함. 현재 운영 대상으로는 후자만 복구했으며, 전자 정리(보존/삭제/이름변경)는 인간 결정이 필요함.
-- 2026-04-20: 현재 Owner-absence canonical의 Notion 컬럼명을 한글로 바꾸는 것은 `AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN.md` 기준 스키마 변경에 해당하며 four-eyes 승인이 필요함. 즉시 변경하지 말고 다음 스키마 버전 제안으로 다뤄야 함.
+- 2026-04-20: 현재 Owner-absence canonical의 Notion 컬럼명을 한글로 바꾸는 것은 `AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN.md` 기준 스키마 변경에 해당하며 γ gate 승인이 필요함. 즉시 변경하지 말고 다음 스키마 버전 제안으로 다뤄야 함.
+- 2026-04-20: live Notion operational DB title is currently `AX 소유자 부재 신고`, while `AX_handoff_package_v2` expects `AX Owner Absence Declarations` as the canonical title. Script/runtime compatibility exists, but title reconciliation still needs a human decision.
 
 ## access_realignment_log
 
@@ -40,7 +42,22 @@ _(empty — populate during WB2; one line per access change with before/after)_
 - 2026-04-18: `docs/active/AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md` (v1) is referenced by `AX_SUPERSESSION_AND_NAMING_NOTICE.md` §1 and by `docs/handoff/AX_HANDOFF_TO_CLAUDE_CODE.md` §5 but is not present in this handoff package. It was authored in an earlier session. Recovery: retrieve from prior chat export, original working copy, or the Anthropic session history. Until restored, fall back to `AX_OPERATIONS_POLICY.md` §7 (which summarizes guard policy at a higher level) and do not design guard logic from scratch — that would be scope expansion.
 - 2026-04-20: `똘똘이mk2`의 guard pack, installer, 2026-04-15 runtime audit 메모를 근거로 `docs/active/AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md`를 복구함. 남은 gap은 문서 부재가 아니라 live host 재-export 미확보 상태다.
 
+## policy_change_log
+
+- 2026-04-18: Decision 15 (AI-proposer / Human-approver) adopted; Decision 14 (Deputy Owner hybrid model) revoked same day. Revocation reason: 원혜연's operational strength is business work assignment, not system governance; assigning her Deputy operational authority produced form without substance. Replacement works via entity separation (AI proposer + human approver) for self-approval prevention and γ gate (proposer + independent reviewer + approver) for high-risk actions. See AX_ARCHITECTURE_DECISIONS §14-15.
+
+## owner_absence_activation_procedure_template
+
+Pending definition. Will be codified at first real Owner-absence scenario triggering Deputy activation. Scaffold:
+- trigger check (unreachable beyond emergency window AND active-failure state)
+- notification path to 원혜연
+- scope of elevated authority (narrow — only what is needed to contain the failure)
+- post-hoc 강은구 review within 72 hours
+- incident log entry
+
 ## cycle_log
+- 2026-04-20: `AX_handoff_package_2026-04-18_v2.zip`를 읽고 active policy baseline을 package v2로 재설정함. Core docs (`AX_ARCHITECTURE_DECISIONS`, `AX_AVAILABILITY_AND_RBAC`, `AX_OPERATIONS_POLICY`, `AX_SUPERSESSION_AND_NAMING_NOTICE`, `AX_PHASE0_INVENTORY_TEMPLATE`, `AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY`, handoff, CLAUDE/AGENTS)를 package 기준으로 동기화함.
+- 2026-04-20: package-v2 기준선 적용 후 잃어버린 current-state evidence를 `AX_PHASE0_INVENTORY_TEMPLATE`에 재병합했고, 보조 문서/스크립트의 `four-eyes` 잔재와 `v2` 참조를 현재 Decision 15 / γ gate / v3 기준으로 정리함.
 - 2026-04-20: `docs/active/AX_PHASE0_INVENTORY_TEMPLATE.md`를 현재 회수 가능한 증거 기준으로 정리 완료. §§4–15.5는 채워졌고, 미복구 자산/라이브 증빙 부족만 §10·§11·§16에 blocker로 남김.
 - 2026-04-20: Phase 0 필수 산출물로 `docs/active/AX_PHASE0_MIGRATION_ARTIFACTS.md`, `docs/active/AX_PHASE0_BASELINE_METRICS.md`를 추가해 old-to-new mapping, token ownership, secret rotation checklist, rollback/retirement checklist, baseline metrics 파일을 생성함. 다만 라이브 runtime export/브랜치 보호 증빙/실제 metric baseline 값은 인간 권한이 필요해 미완료 상태로 남김.
 - 2026-04-20: 로컬 검증/자동화 경로 추가 — `scripts/validate_owner_absence.py`, `scripts/sync_owner_absence_phase_a.py`, `make owner-absence-validate`, `make phasea-dry-run`, `.github/workflows/owner-absence-validate.yml`. 현재는 로컬 dry-run/CI 준비까지 완료했고, 실제 Slack/Telegram fanout은 라이브 토큰 및 destination ID가 확보될 때만 활성화 가능함.

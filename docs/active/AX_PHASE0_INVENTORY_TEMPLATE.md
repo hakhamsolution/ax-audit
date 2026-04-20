@@ -1,7 +1,7 @@
 # AX_PHASE0_INVENTORY_TEMPLATE
 
-Version: 2026-04-20 v9
-Status: populated with current-state evidence; remaining blockers are documented in §10 and §16
+Version: 2026-04-20 v10
+Status: populated with current-state evidence and re-aligned to package-v2 Decision 15 baseline; remaining blockers are documented in §10 and §16
 Patch record:
 - v2 incorporated AX_DEPUTY_OWNER_PATCH (2026-04-18 v1 active)
 - v3 filled §15 with confirmed values, added §15.5 (AI agents), added §15.6 (immediate follow-up actions)
@@ -11,6 +11,7 @@ Patch record:
 - v7 incorporated live credential-layout evidence: one shared Slack app+bot credential set and one shared Telegram bot token are confirmed in runtime; branch-protection blocker is narrowed to an identified but uninitialized GitHub remote
 - v8 reflects successful GitHub HTTPS bootstrap: canonical remote `hakhamsolution/ax-audit` is initialized and `main` is published; branch-protection remains a settings-proof blocker only
 - v9 incorporates GitHub platform-gate evidence: Actions run failure is caused by account billing, and branch-protection APIs for this private repo currently return plan-gated 403
+- v10 re-aligns the inventory to `AX_handoff_package_2026-04-18_v2.zip`: Decision 15 terminology restored, proposer-approver model replaces hybrid/self-approval wording, and previously recovered runtime evidence is preserved
 
 ## 1. Purpose
 
@@ -41,7 +42,7 @@ The filled inventory must contain all of the following:
 11. current approval paths — **filled in §14**
 12. current human operators and privileges — **filled in §15**
 13. Owner-absence declaration log destination — **filled in §15.4, γ two-canonical confirmed**
-14. self-approval-risk register — **filled in §15.3**
+14. proposer-approver separation register — **filled in §15.3**
 
 ## 4. Current agent inventory
 
@@ -219,7 +220,7 @@ Live runtime note (2026-04-20):
 | Asset | Why needed | Where expected | Blocking severity | Recovery plan |
 |---|---|---|---|---|
 | historical 57-skill manifest | historical handoff mentions 57-skill classification, but only later `90 -> 65` mapping evidence is currently recovered | archived handoff / legacy repo / install logs | low | recover later for archival completeness; do not block current-state skill classification on it |
-| branch-protection / reviewer enforcement proof | self-approval rule exists in policy, but technical enforcement is currently unavailable on the present GitHub plan for this private repo: branch-protection and ruleset APIs returned `403 Upgrade to GitHub Pro or make this repository public` on 2026-04-20 | Git hosting plan / repository settings | high | either upgrade plan, move governance repo to a plan tier that supports private-repo protection, or make the repo public if policy permits; only then capture settings proof during WB2 |
+| branch-protection / reviewer enforcement proof | proposer-approver technical enforcement is currently unavailable on the present GitHub plan for this private repo: branch-protection and ruleset APIs returned `403 Upgrade to GitHub Pro or make this repository public` on 2026-04-20 | Git hosting plan / repository settings | high | either upgrade plan, move governance repo to a plan tier that supports private-repo protection, or make the repo public if policy permits; only then capture settings proof during WB2 |
 
 ## 11. Skill-by-skill classification table
 
@@ -292,62 +293,66 @@ The exact historical "57 skills" manifest referenced in earlier migration notes 
 
 ## 14. Current approval paths
 
-| Action | Current approver | Current method | Logged? | Self-approval possible today? | Proposed future approver |
+| Action | Current approver | Current method | Logged? | Proposer type today | Proposed future approver |
 |---|---|---|---|---|---|
-| promote automation | non-proposer Approver by policy; technical enforcement not yet evidenced | PR / manual written approval before prod | partial | yes | non-proposer Approver only |
-| demote automation | non-proposer Approver by policy; emergency demotion may be post-hoc reviewed | PR / manual approval or incident containment | partial | yes | non-proposer Approver only |
-| rotate secrets R1 | Owner / Deputy Owner / Operator per matrix | runbook + secret-system action | partial | n/a | same, but with explicit checklist artifact |
-| rotate secrets R2 | second Owner-class actor required | four-eyes human approval | partial | yes | Owner + Deputy Owner |
-| restart services | Operator | direct runtime action | partial | n/a | Operator |
-| change guard rule | second Owner-class actor required by policy | PR/manual change to guard pack | partial | yes | Owner + Deputy Owner |
-| change architecture definition | second Owner-class actor required by policy | doc PR / written approval | yes | yes | Owner + Deputy Owner |
+| promote automation | 강은구 | GitHub PR + written approval intended; technical enforcement is still incomplete because this private repo's branch-protection/ruleset APIs are plan-gated and Actions execution is billing-gated | partial | AI | 강은구 |
+| demote automation | 강은구 | PR + written approval intended; active-failure containment demotion may proceed first and be reviewed afterward | partial | AI / mixed | 강은구 |
+| rotate secrets R1 | 강은구 | runbook + secret-store action with Owner approval | partial | AI / mixed | 강은구 |
+| rotate secrets R2 | 강은구 | γ gate required: AI proposal + independent AI review + Owner approval; backend not yet migrated | partial | AI | 강은구 |
+| restart services | 강은구 (Operator emergency path exists) | direct host action under documented runbook; retrospective log required if taken as emergency containment | partial | AI / Operator | 강은구 |
+| change guard rule | 강은구 | intended PR + independent AI review; technical enforcement proof is still blocked on current GitHub hosting plan | partial | AI | 강은구 |
+| change architecture definition | 강은구 | ADR/doc PR + independent AI review before approval | yes | AI | 강은구 |
 
 Recovered current-channel routing note:
 - `approval-workflow.sh` routes L1 -> `#999-컨퍼런스`, L2 -> `#003-간부회의`, and L3/L4 -> `#000-대표-똘똘이`
 - this supports using `#000-대표-똘똘이` as the present Slack admin escalation surface until a newer runtime export proves otherwise
 
-## 15. Current humans and privileges — FILLED
+## 15. Current humans and privileges — FILLED (Decision 15 aligned)
 
-Confirmation source: Owner decision recorded 2026-04-18.
-Activation target date: 2026-04-19.
+Confirmation source: Owner decision recorded 2026-04-18 and package-v2 supersession set adopted on 2026-04-20.
 
 ### 15.1 Canonical humans table
 
-| Human | Current effective privileges | Formal role today | Owner / Deputy Owner / Approver / Operator eligibility | Self-approval risk note | Risk note | Proposed future role |
+| Human | Current effective privileges | Formal role today | System role assignment | Practical exercise | Business-side role | Notes |
 |---|---|---|---|---|---|---|
-| 강은구 (Human X) | full — production secret store access, GoClaw host deploy/restart, Guard rule repository access, Class C·D tenant data access, automation promote/demote authority | 대표 | Owner: yes · Deputy Owner: no (cannot hold both) · Approver: yes · Operator: yes | current state: self-approval has been occurring by default because no second approver existed · from activation date: forbidden for promote_automation and demote_automation | Owner SPOF is structurally resolved by Deputy Owner assignment but actual access scope must be re-aligned per §15.6 | Owner + Approver + Operator |
-| 원혜연 (Human Y) | full — production secret store access, GoClaw host deploy/restart, Guard rule repository access, Class C·D tenant data access, automation promote/demote authority | 대표 | Owner: no · Deputy Owner: yes (accepted) · Approver: yes · Operator: yes | current state: self-approval has been occurring by default · from activation date: forbidden for promote_automation and demote_automation | **current access scope is broader than the hybrid model's Deputy Owner peacetime authority; scope reduction required in Phase 1 per §15.6** | Deputy Owner + Approver + Operator |
+| 강은구 | full — production secret store access, GoClaw/OpenClaw host deploy-restart, guard-rule repository access, Class C·D tenant data access, GitHub repo administration, automation approval | 대표 | Owner · Approver · Operator | operational | — | sole operational Approver; current GitHub hosting plan prevents proving technical branch-protection enforcement |
+| 원혜연 | broad read/write access still remains on some legacy system surfaces; exact platform-by-platform reduction proof is not yet exported | 대표 | Deputy Owner (dormant) · Approver (formal) · Operator (available) | dormant for system governance in normal operation | Business Work Partner: accept/reject/modify work assignments | current access realignment remains a WB2 task; daily governance authority is intentionally not exercised |
 
 ### 15.2 Role assignment summary
 
-- Owner: 강은구
-- Deputy Owner: 원혜연
-- Approver: 강은구 and 원혜연 (both, required by self-approval rule)
-- Operator: 강은구 and 원혜연 (both, required for operational continuity)
-- Requester: either human when proposing work they are not the approver for
+- Owner (operational): 강은구
+- Deputy Owner (dormant, formal only): 원혜연
+- Approver (operational): 강은구
+- Approver (formal, dormant): 원혜연
+- Operator (primary): 강은구
+- Operator (available): 원혜연
+- Business Work Partner: 원혜연
+- Requester: either human when requesting work
 
-Owner and Deputy Owner are two distinct humans.
-Both humans hold Approver.
-Both humans hold Operator.
-All exit criteria in §16 related to role assignment are satisfied.
+Proposer-approver separation is satisfied by design only when AI proposes and 강은구 approves. The remaining gap is technical enforcement, not role definition.
 
-### 15.3 Self-approval risk register
+### 15.3 Proposer-approver separation register
 
-| Action class | Pre-activation state (through 2026-04-18) | Post-activation state (from 2026-04-19) |
-|---|---|---|
-| promote_automation proposed by 강은구 | 강은구 self-approved (no alternative) | 원혜연 approves; 강은구 self-approval forbidden |
-| promote_automation proposed by 원혜연 | 원혜연 self-approved (no alternative) | 강은구 approves; 원혜연 self-approval forbidden |
-| demote_automation proposed by 강은구 | 강은구 self-approved | 원혜연 approves, except demotion required to contain active failure |
-| demote_automation proposed by 원혜연 | 원혜연 self-approved | 강은구 approves, except demotion required to contain active failure |
+| Action class | Proposer (default) | Reviewer (default, γ gate only) | Approver | Audit check |
+|---|---|---|---|---|
+| promote_automation | Codex | — | 강은구 | proposer ≠ approver |
+| demote_automation | Codex | — | 강은구 | same; active-failure containment exception logged |
+| R1 rotate_secret | Codex | — | 강은구 | same |
+| R2 rotate_secret | Codex | Claude Code | 강은구 | γ gate complete |
+| change_guard_rule | Codex | Claude Code | 강은구 | γ gate complete |
+| change_secret_backend | Codex | Claude Code | 강은구 | γ gate complete |
+| retire_legacy_component | Codex | Claude Code | 강은구 | γ gate complete |
+| change_architecture_definition | Codex | Claude Code | 강은구 | γ gate complete |
 
-Interim rule for the 2026-04-18 to 2026-04-19 gap:
-- non-critical promotions paused
-- demotions allowed only to contain active failure
-(adopted as proposed, per Owner decision D4)
+Manual override tracker: any action in the above classes executed without going through the proposer pipeline must be logged here with rationale. Empty at current evidence cut.
+
+| Date | Action class | Override actor | Rationale | Resolution |
+|---|---|---|---|---|
+| _(empty)_ |  |  |  |  |
 
 ### 15.4 Owner-absence declaration log destination — CONFIRMED
 
-Owner decision 2026-04-18: structure γ (two-canonical + two alert mirrors).
+Owner decision 2026-04-18: γ two-canonical + two alert mirrors.
 
 | Destination | Role |
 |---|---|
@@ -356,58 +361,41 @@ Owner decision 2026-04-18: structure γ (two-canonical + two alert mirrors).
 | Slack admin channel | alert mirror (not audit evidence) |
 | Telegram | alert mirror (not audit evidence) |
 
-Canonical consistency rule: conflict resolution by later append timestamp; discrepancies are audit incidents reviewed by governance-audit.
+Conflict resolution by later append timestamp; discrepancies are audit incidents reviewed by governance-audit.
 
-Full policy including schema, write path, broadcast automation phases, and dual-outage fallback: AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v2.
+Full policy: `AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY` v3.
 
 Automation status:
 - Phase A (Notion → Git, Slack, Telegram one-way sync): target within 30 days of activation (deadline 2026-05-19)
 - Phase B (two-way sync with conflict detection): target within 60 days of activation (deadline 2026-06-18)
-- Interim: manual dual-canonical entry required within the sync window defined in the policy §5.2
+- Interim: manual dual-canonical entry required within the policy sync window
 
 ### 15.5 AI agents and effective privileges
 
-This subsection was added in v3 to close a gap identified while filling §15: §15 as originally scoped covered only humans, but AI agents such as Codex, Claude Code instances, and future automation agents may hold effective privileges that resemble Operator-level or Owner-level capability.
+Every AI agent that can read secrets, write repos/docs, or trigger privileged actions must appear here.
 
-Fill rule:
-- every AI agent that can read any secret, write to any repository, or trigger any privileged action must appear in this table
-- "self-approval path possible?" asks whether the agent could both propose and execute a privileged action without a human second-pair-of-eyes; if yes, either the agent must be restricted or a human approval gate must be inserted
-
-| Agent | Runtime | Effective tool access | Secret read access | Write access scope | Self-approval path possible? | Proposed future restriction |
-|---|---|---|---|---|---|---|
-| Codex | Codex OAuth trusted runner | repo shell, code edits, connectors used by major agents, automation design | yes — `~/.codex/auth.json` plus delegated env creds | repos, workflow artifacts, connector-backed records | yes | limit to approved team leads and enforce PR + non-proposer approval for privileged changes |
-| Claude Code instance A | guarded Claude worker plane | repo shell, agent-specific connectors, local hooks | yes — worker env and any delegated connector creds | repos, docs, internal channel reports | yes | keep audited wrapper path only; no direct production promotion without human approval artifact |
-| Claude Code instance B | guarded Claude worker plane | same as instance A on separate task lane | yes — worker env and delegated creds | repos, docs, internal reports | yes | same as instance A |
-| n8n workflow runners | deterministic runtime | webhook ingestion, connector glue, outbound notifications | yes — workflow secrets and webhook secrets | Notion/Git/Slack/Telegram sync actions | yes | require promote_automation approval and exported workflow review before production |
-| other automation agents (`main`, `jarvis`, heartbeat, Hermes`) | OpenClaw / cron / Hermes | ingress, routing, archive polling, long-run memory | mixed: yes for OpenClaw/heartbeat, no direct evidence for Hermes | routing logs, archive state, alerts | yes | isolate public ingress from specialist lanes; keep Hermes non-public |
+| Agent | Runtime | Effective tool access | Secret read access | Write access scope | AX role (proposer / reviewer / neither) | Self-approval path possible? | Proposed future restriction |
+|---|---|---|---|---|---|---|---|
+| Codex | Codex OAuth trusted runner | repo shell, git push, GitHub/Notion/Google/Slack connectors when invoked, automation design | yes — `~/.codex/auth.json` plus delegated env creds | repos, workflow artifacts, Git canonical, selected connector-backed records | proposer | yes — current repo still permits direct push because branch protection is plan-gated | keep to approved trusted runners only; enforce PR-only once hosting gate is resolved |
+| Claude Code reviewer lane | guarded Claude worker plane | repo shell, review comments, local hooks, selected connectors | yes — worker env and delegated connector creds | repos, docs, internal reports | reviewer | yes — technical direct-write path exists on legacy surfaces even though reviewer role should not use it | distinct session/context only; no production promotion path |
+| n8n workflow runners | deterministic runtime | webhook ingestion, connector glue, outbound notifications | yes — workflow secrets and webhook secrets | Notion/Git/Slack/Telegram sync actions | proposer (narrow, per workflow) | yes — if promoted without PR artifact or isolated runtime review | require exported workflow review, promote_automation approval, and explicit audit logging |
+| OpenClaw public/control-plane agents (`main`, `jarvis`, team leads) | OpenClaw | ingress, routing, archive polling, Slack/Telegram messaging | yes — gateway token, model creds, shared channel creds | routing logs, archive state, alerts, manager-channel responses | neither | yes — current legacy runtime still has direct messaging authority on shared credentials | isolate public ingress to `hq-router`; remove privileged config mutation from legacy lanes |
+| Heartbeat / cron archive jobs | cron / helper scripts | reminders, archive polling, summary generation | yes — archive and channel creds | reminders, archive-derived reports | neither | no direct approval path evidenced, but can post operator-facing messages | keep deterministic only; no privileged mutation role |
+| Hermes | local Hermes runtime | long-running deep work, local memory, experimental tasks | no direct secret read evidenced | local experimental artifacts only | neither | no current privileged path evidenced | keep non-public and non-canonical until explicit approval |
 
 ### 15.6 Immediate follow-up actions from filled §15
 
-The following actions are required as a direct consequence of filling §15.
-They are tracked here because they are gap-closing work, not new design.
-
-1. Reduce 원혜연 effective access to match Deputy Owner peacetime scope:
-   - Guard rule repository: change direct-edit access to read + PR-approve access
-   - production secret store: keep read access and R1 rotation capability; remove or gate R2 operation capability (backend change, age key replacement) so it requires four-eyes
-   - Class C·D tenant data: verify tenancy separation per AX_DATA_TENANCY_AND_RETENTION_POLICY is enforced at storage path and credential level
-2. Reduce 강은구 peacetime access for four-eyes-required actions:
-   - change_guard_rule, change_secret_backend, retire_legacy_component, change_architecture_definition may not be executed by Owner alone; enforce technically where possible (e.g. PR approval requirement, two-person rule on infrastructure repository)
-3. Activate self-approval forbidden rule on 2026-04-19:
-   - promote_automation and demote_automation require the non-proposer as approver
-   - pause non-critical promotions during the 2026-04-18 to 2026-04-19 gap
-4. Establish Owner-absence declaration log per γ structure:
-   - initialize Notion database with schema from AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY §4
-   - initialize Git append-only file at `audit/owner_absence.jsonl`
-   - build Phase A automation (Notion → Git, Slack, Telegram) within 30 days
-   - build Phase B automation (two-way with conflict detection) within 60 days
-   - during interim, dual-canonical manual entry within sync window
-5. Populate §15.5 AI agents table for every AI agent currently holding any privileged access.
-6. Schedule quarterly RBAC review per AX_AVAILABILITY_AND_RBAC §8.
+1. Complete WB2 access realignment for 원혜연: keep business-side write paths where required, but reduce governance surfaces to read or approval-only where policy demands.
+2. Establish and preserve an independent Claude Code reviewer session for γ gate actions; reviewer and proposer must remain distinct sessions with distinct context.
+3. Resolve GitHub hosting blockers so PR-only enforcement can be proven technically: current blockers are private-repo protection plan gate and Actions billing gate.
+4. Remediate shared live Slack/Telegram platform credentials into isolated AX credential sets.
+5. Continue Phase A owner-absence automation build only under the proposer-approver pipeline.
+6. Keep the Notion operational DB title mismatch (`AX 소유자 부재 신고` vs package-v2 canonical English title) as an explicit reconciliation item rather than silently renaming it.
 
 ## 16. Exit criteria for Phase 0
 
 Phase 0 is complete only when:
-- every currently active channel has an owner — **done for recovered current-state mapping (§5); sanitized live token/app binding evidence is now captured in §5 and §9**
+- every currently active channel has an owner — **done for recovered current-state mapping (§5); sanitized live token/app binding evidence is captured**
 - every current secret has a known storage location and an R1/R2 classification — **partial (§9 classified major secret classes and live runtime paths; current runtime still uses shared Slack/Telegram credentials and console-level custody records remain incomplete)**
 - every current critical script is inventoried — **done (§8)**
 - every current agent has a target-state disposition — **done (§4)**
@@ -415,11 +403,9 @@ Phase 0 is complete only when:
 - every known missing asset has a blocking severity — **done (§10)**
 - token collision risks are explicitly listed — **done (§5, §9)**
 - approval paths and privilege paths are written down — **done (§14, §15)**
-- Owner and Deputy Owner are explicitly assigned to two different humans — **done (§15.2)**
-- both humans are formally assigned the Approver role — **done (§15.2)**
-- both humans are formally assigned the Operator role — **done (§15.2)**
-- the Owner-absence declaration mechanism is documented and has a log destination in the central audit log — **done (§15.4, γ confirmed; broadcast automation pending per §15.6 item 4)**
-- the self-approval-risk register is populated for every action class where the same human currently could be proposer and approver — **done (§15.3)**
+- role assignment is documented for Owner / Deputy Owner / Approver / Operator — **done (§15.2)**
+- the Owner-absence declaration mechanism is documented and has a log destination in the central audit log — **done (§15.4; broadcast automation still pending)**
+- the proposer-approver separation register is populated for privileged action classes — **done (§15.3)**
 - AI agents with privileged access are inventoried — **done (§15.5)**
 
 ## 17. Instruction to future sessions
@@ -427,5 +413,5 @@ Phase 0 is complete only when:
 Do not skip this document.
 If someone asks for migration planning without a completed Phase 0 inventory, the correct response is to say the migration is still evidence-incomplete.
 
-As of 2026-04-20, §§4–15.5 are populated from the current recoverable evidence set.
-Phase 0 is still not complete because branch-protection enforcement for this private repo is currently blocked by the active GitHub plan, shared live Slack/Telegram credentials have not yet been remediated into isolated AX credential sets, and a few non-blocking historical archival gaps are still outstanding as listed in §10 and §16.
+As of 2026-04-20, §§4–15.5 are populated from the current recoverable evidence set and are re-aligned to the package-v2 Decision 15 baseline.
+Phase 0 is still not complete because branch-protection enforcement for this private repo is currently blocked by the active GitHub plan, GitHub Actions execution is currently billing-gated, shared live Slack/Telegram credentials have not yet been remediated into isolated AX credential sets, and a few non-blocking historical archival gaps are still outstanding as listed in §10 and §16.

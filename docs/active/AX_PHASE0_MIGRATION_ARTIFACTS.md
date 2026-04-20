@@ -62,7 +62,7 @@ This resolves the inventory gap that previously named the token ownership manife
 | Google OAuth / app credentials | Drive/Docs/Sheets/Slides actions | Owner + Deputy Owner shared | Owner-managed with limited operator use | medium | R1 | live connection inventory missing |
 | GitHub app / PAT / deploy credentials | repo write, CI, workflow ops | Owner + Deputy Owner shared | Owner-managed with Approver oversight | medium | R1 | canonical remote is initialized, but branch-protection is plan-gated for this private repo and Actions execution is billing-gated until account settlement |
 | Codex OAuth runner auth (`~/.codex/auth.json`) | trusted Codex OAuth majors | approved team leads on trusted host | Operator-held runner auth, no broad secret-store role | low | R1 | trusted-runner host inventory not exported |
-| future SOPS age key | secret backend replacement | not yet deployed | Owner + Deputy Owner four-eyes custody | medium | R2 | backend not yet migrated |
+| future SOPS age key | secret backend replacement | not yet deployed | γ gate custody model (AI proposal + independent AI review + 강은구 approval) | medium | R2 | backend not yet migrated |
 
 ## 5. Secret rotation checklist
 
@@ -74,7 +74,7 @@ This resolves the inventory gap that previously named the token ownership manife
 - [ ] Telegram token collision isolated by dedicated AX bot/chat binding.
 - [ ] Notion / Google / GitHub integration owners documented from live console.
 - [ ] R1 rotation executed and logged.
-- [ ] R2 backend custody and procedure executed under four-eyes rule.
+- [ ] R2 backend custody and procedure executed under γ gate.
 
 ## 6. Rollback checklist
 

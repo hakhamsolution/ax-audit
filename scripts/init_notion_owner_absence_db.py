@@ -4,7 +4,7 @@ init_notion_owner_absence_db.py
 
 Purpose
 -------
-Create the Notion database `AX 소유자 부재 신고` with the properties
+Create the Notion database `AX Owner Absence Declarations` with the properties
 defined in AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN v1 §4.
 
 This script is the programmatic alternative to manual Notion UI setup. It is
@@ -55,8 +55,10 @@ from typing import Any
 SCHEMA_VERSION = "1.0"
 DB_TITLE_EN = "AX Owner Absence Declarations"
 DB_TITLE_KR = "AX 소유자 부재 신고"
-DB_TITLE_CANDIDATES = [DB_TITLE_KR, DB_TITLE_EN]
-DB_TITLE = DB_TITLE_KR
+# Prefer the package-v2 canonical title, but keep compatibility with the
+# already-created Korean-titled operational DB during verification/recovery.
+DB_TITLE_CANDIDATES = [DB_TITLE_EN, DB_TITLE_KR]
+DB_TITLE = DB_TITLE_EN
 
 # Property schema in Notion API format (matching AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN §4.2)
 PROPERTIES: dict[str, dict[str, Any]] = {
@@ -142,10 +144,10 @@ def build_create_payload(parent_page_id: str) -> dict[str, Any]:
                 "type": "text",
                 "text": {
                     "content": (
-                        f"AX Owner-absence declarations 운영 스키마 (Notion). "
-                        f"스키마 v{SCHEMA_VERSION}. "
-                        f"Git 기준 원본 파일은 audit/owner_absence.jsonl. "
-                        f"See AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v2."
+                        f"Canonical (Notion) for Owner-absence declarations. "
+                        f"Schema v{SCHEMA_VERSION}. "
+                        f"Paired with Git canonical at audit/owner_absence.jsonl. "
+                        f"See AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v3."
                     )
                 },
             }

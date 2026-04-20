@@ -1,7 +1,7 @@
 # AX_GUARD_FAILMODE_AND_RUNTIME_POLICY
 
 Version: 2026-04-20 v1
-Status: recovered from `똘똘이mk2` runtime evidence; live host re-export verification still pending
+Status: recovered from `똘똘이mk2` runtime evidence; sanitized live-host re-export verified on 2026-04-20
 Patch record:
 - v1 reconstructed from recovered guard-pack files, install scripts, and 2026-04-15 runtime audit notes
 
@@ -72,8 +72,8 @@ It is a recovery of the currently evidenced guard model from the `똘똘이mk2` 
 
 ### 4.3 Current confidence limit
 
-This document is recovered from repository evidence.
-The current `ax-audit` session could not re-export the live host state directly, so any future session that gains host access must prefer a fresh sanitized export of:
+This document is recovered from repository evidence and was cross-checked against a sanitized live-host export on 2026-04-20.
+Any future session that gains host access should still prefer a fresh sanitized export of:
 - `/root/.openclaw/openclaw.json`
 - one representative route-log sample
 - the effective runner guard install state
@@ -129,5 +129,5 @@ Borderline cases must follow `AX_OPERATIONS_POLICY` §7.3-§7.4:
 ## 7. Current unresolved items
 
 - A sanitized export of the live `/root/.openclaw/openclaw.json` is still missing from `ax-audit`.
-- The current session could not re-verify the live guard install state on the host.
+- The current session verified the guard install markers on the host, but should not assume they remain unchanged indefinitely.
 - The recovered notes indicate document/runtime drift remained present on 2026-04-15; future sessions must assume drift is still possible until re-exported.

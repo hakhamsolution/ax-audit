@@ -2,7 +2,7 @@
 
 This directory hosts the **Git canonical** of the Owner-absence declaration log for the AX system.
 
-This is one of two canonical stores. The other is the Notion database `AX Owner Absence Declarations`. Both canonicals must contain the same records. See `AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v2` for the consistency rules.
+This is one of two canonical stores. The other is the Notion database `AX Owner Absence Declarations`. Both canonicals must contain the same records. See `AX_OWNER_ABSENCE_LOG_DESTINATION_POLICY v3` for the consistency rules.
 
 ## Files
 
@@ -17,7 +17,7 @@ Only Owner or Deputy Owner may write. Automation may sync from Notion.
 1. Construct the record conforming to `owner_absence.schema.json`.
 2. Append as a single JSONL line to `owner_absence.jsonl`.
 3. Commit via a branch + PR. Direct pushes to main are disallowed.
-4. PR is reviewed by the non-proposer (self-approval rule).
+4. PR is approved by the human approver after AI proposal review (proposer-approver separation).
 5. After merge, verify the Notion canonical contains the same record.
 
 ## Updating an existing declaration
@@ -47,7 +47,7 @@ Layer 2 (pre-commit or pre-push local hook enforcement) is still a follow-up tas
 
 ## Schema migrations
 
-A schema version bump (e.g. 1.0 → 1.1) is a four-eyes-required action per `AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN §7`. Migration notes are appended here.
+A schema version bump (e.g. 1.0 → 1.1) is a γ gate action per `AX_OWNER_ABSENCE_LOG_SCHEMA_DESIGN §7`. Migration notes are appended here.
 
 ### Migration log
 
