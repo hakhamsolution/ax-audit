@@ -17,6 +17,7 @@ _(empty — append as found)_
 ## newly_discovered_gates
 
 - 2026-04-20: `AX_handoff_package_2026-04-18_v2.zip` confirms the active governance model is Decision 15 (`AI-proposer / Human-approver`) rather than the previously restored hybrid Deputy Owner model. Core policy documents and operator instructions must be re-aligned before further execution.
+- 2026-04-20: GitHub Actions billing gate persists after package-v2 realignment. Manual workflow run `24642505500` on commit `dbe1896` failed before job start with the same billing error as earlier runs.
 - 2026-04-20: Notion API visibility gate — `python3 scripts/init_notion_owner_absence_db.py --verify --database-id 57605a19-e78d-491e-bd29-c397396b99ae` succeeds with
   inconclusive status (`live properties are not visible`) and requires manual UI confirmation of schema v1.0.
 - 2026-04-20: 사용자가 직접 확인한 결과와 최신 Notion 조회 모두 동일: `AX Owner Absence Declarations` DB 스키마에 v1.0 사용자 정의 속성이 반영되지 않고 `Name`(타이틀)만 표시됨. 현재 Notion/connector 모두에서 스키마 부재 상태가 확인됨.
