@@ -1,7 +1,7 @@
 # AX_PHASE0_INVENTORY_TEMPLATE
 
-Version: 2026-04-20 v12
-Status: populated with current-state evidence and re-aligned to package-v2 Decision 15 baseline; representative-provided Slack/Telegram cutover details incorporated and corrected; remaining blockers are documented in §10 and §16
+Version: 2026-04-20 v13
+Status: populated with current-state evidence and re-aligned to package-v2 Decision 15 baseline; representative-provided Slack/Telegram cutover details, confirmed Slack admin-channel proof, and preliminary Track A scan evidence are incorporated; remaining blockers are documented in §10 and §16
 Patch record:
 - v2 incorporated AX_DEPUTY_OWNER_PATCH (2026-04-18 v1 active)
 - v3 filled §15 with confirmed values, added §15.5 (AI agents), added §15.6 (immediate follow-up actions)
@@ -14,6 +14,7 @@ Patch record:
 - v10 re-aligns the inventory to `AX_handoff_package_2026-04-18_v2.zip`: Decision 15 terminology restored, proposer-approver model replaces hybrid/self-approval wording, and previously recovered runtime evidence is preserved
 - v11 incorporates representative-provided Slack/Telegram concrete values: Slack app `똘똘`, bot member `U0ARNS78EM9`, DM endpoint `D0AS8534L01`, Telegram bot `@똘똘이`, and the decision to reuse existing tokens while retiring the prior flow
 - v12 corrects those concrete values by distinguishing Slack workspace `eunhyebooboo.slack.com` from channel-level evidence and by updating the Telegram bot identifier to `@SN_ocle_bot`
+- v13 confirms the current Slack admin-channel permalink `https://eunhyebooboo.slack.com/archives/C0ASNEFES4C`, records that the legacy Slack path is still active, and logs a preliminary Track A repo scan
 
 ## 1. Purpose
 
@@ -138,7 +139,7 @@ Human owner is system-level only in the current evidence set. No per-agent human
 | Channel | Current owner | Current token/bot | Purpose | Collision risk | Proposed future owner |
 |---|---|---|---|---|---|
 | Telegram manager groups `ABEL` (`-1003286171878`), `은혜그룹` (`-1003881200687`) | `main` / `jarvis` ingress | Telegram bot token (`SECRETS.md`, legacy collision noted) | 대표 지시, mobile ingress, archive source; `은혜그룹`에서는 topic `92` archive topic도 관측됨 | high | `hq-router` only |
-| Slack `#000-대표-똘똘이` (`C0ASNEFES4C`) | `main`, approval workflow, heartbeat escalation | Slack app/bot token (exact app split not yet exported) | 대표 direct ingress, L3/L4 escalation, admin heartbeat escalation | medium | `hq-router` + human approvers |
+| Slack `#000-대표-똘똘이` (`C0ASNEFES4C`) | `main`, approval workflow, heartbeat escalation | Slack app/bot token (exact app split not yet exported) | 대표 direct ingress, L3/L4 escalation, admin heartbeat escalation; permalink confirmed as `https://eunhyebooboo.slack.com/archives/C0ASNEFES4C`, and recent 2026-04-15/16 message hits show the path is still live | medium | `hq-router` + human approvers |
 | Slack DM `D0AS8534L01` | 강은구 ↔ `똘똘` bot | existing shared Slack app/bot token; bot member `U0ARNS78EM9` | current simple direct bot conversation | medium | temporary mirror/intake only; consider dedicated private channel if 원혜연 / governance-audit read access becomes necessary |
 | Slack `#접수-자비스` (`C0ASXPG761X`) | `main`, `jarvis` | Slack app/bot token | intake / 접수 보조 | medium | `hq-router` only |
 | Slack `#002-이사회` (`C0ASCNT8PFD`) | OpenClaw control plane core 7 | Slack app/bot token | control-plane collaboration | medium | core control-plane only |
@@ -217,6 +218,8 @@ Live runtime note (2026-04-20):
 - Slack live config contains exactly one `botToken` and one `appToken` under `root.channels.slack`; no per-channel Slack token split is evidenced in the current runtime snapshot.
 - Telegram live config contains exactly one `botToken` under `root.channels.telegram`; no per-group Telegram token split is evidenced in the current runtime snapshot.
 - 강은구 confirmed the concrete bot identities and chose to reuse these existing tokens for AX after prior-flow retirement rather than minting a new AX-only token set.
+- preliminary Track A repo scan across `ax-audit`, `ax_handoff_package`, and `똘똘이mk2` found no tracked `.env*` or `*secret*` files in `ax-audit`/`ax_handoff_package`; in `똘똘이mk2`, `SECRETS.md` exists locally but is gitignored, while `dashboard/.env.example` is tracked.
+- the same Track A scan found token-handling code history in `똘똘이mk2` files such as `src/config.ts`, `src/telegram-bot.ts`, `scripts/heartbeat.py`, and `scripts/heartbeat_checks/info_requests.py`, so exposure verification remains open pending approved broader scan scope and rotation decision.
 - Therefore the remaining gate is not "new credential issuance" but `prior-flow retirement + Track A exposure verification + SOPS+age migration`.
 
 ## 10. Missing asset list
@@ -225,7 +228,7 @@ Live runtime note (2026-04-20):
 |---|---|---|---|---|
 | historical 57-skill manifest | historical handoff mentions 57-skill classification, but only later `90 -> 65` mapping evidence is currently recovered | archived handoff / legacy repo / install logs | low | recover later for archival completeness; do not block current-state skill classification on it |
 | GitHub billing / branch-protection proof | proposer-approver technical enforcement is currently unavailable on the present GitHub setup: Actions runs are billing-gated and branch-protection/ruleset APIs returned `403 Upgrade to GitHub Pro or make this repository public` on 2026-04-20 | GitHub billing + hosting plan / repository settings | high | settle billing, then either upgrade plan, move governance repo to a tier that supports private-repo protection, or make the repo public if policy permits; only then capture settings proof during WB2 |
-| Slack/Telegram prior-flow retirement proof | representative confirmed existing tokens will be reused, but AX cutover is not complete until the previous flow is actually retired; latest manual note distinguishes Slack workspace `eunhyebooboo.slack.com` from still-unconfirmed channel-level target | Slack / Telegram operational runtime | medium | complete prior-flow shutdown, confirm only AX path remains, confirm the final Slack channel URL/ID, then store token custody in SOPS+age |
+| Slack/Telegram prior-flow retirement proof | representative confirmed existing tokens will be reused, and the current Slack admin-channel target is now confirmed as `#000-대표-똘똘이 (C0ASNEFES4C, permalink https://eunhyebooboo.slack.com/archives/C0ASNEFES4C)`, but AX cutover is not complete until the previous flow is actually retired and the shared-read path is explicitly settled | Slack / Telegram operational runtime | medium | complete prior-flow shutdown, confirm only AX path remains, decide whether DM `D0AS8534L01` stays temporary-only or is replaced by a dedicated shared channel, then store token custody in SOPS+age |
 
 ## 11. Skill-by-skill classification table
 
@@ -393,7 +396,7 @@ Every AI agent that can read secrets, write repos/docs, or trigger privileged ac
 1. Complete WB2 access realignment for 원혜연: keep business-side write paths where required, but reduce governance surfaces to read or approval-only where policy demands.
 2. Establish and preserve an independent Claude Code reviewer session for γ gate actions; reviewer and proposer must remain distinct sessions with distinct context.
 3. Resolve GitHub hosting blockers so PR-only enforcement can be proven technically: current blockers are private-repo protection plan gate and Actions billing gate.
-4. Complete Slack/Telegram cutover using the existing tokens (`똘똘` / `@SN_ocle_bot`), retire the prior flow, confirm the final Slack channel URL/ID under workspace `eunhyebooboo.slack.com`, and run Track A verification to decide whether rotation is required before AX cutover.
+4. Complete Slack/Telegram cutover using the existing tokens (`똘똘` / `@SN_ocle_bot`), treat `#000-대표-똘똘이 (C0ASNEFES4C, permalink https://eunhyebooboo.slack.com/archives/C0ASNEFES4C)` as the currently confirmed Slack admin channel, retire the prior flow, and run Track A verification to decide whether rotation is required before AX cutover.
 5. Continue Phase A owner-absence automation build only under the proposer-approver pipeline.
 6. Keep the Notion operational DB title mismatch (`AX 소유자 부재 신고` vs package-v2 canonical English title) as an explicit reconciliation item rather than silently renaming it.
 

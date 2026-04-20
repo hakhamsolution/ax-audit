@@ -1,7 +1,7 @@
 # AX_PHASE0_MIGRATION_ARTIFACTS
 
-Version: 2026-04-20 v6
-Status: Phase 0 execution artifact; mk2 runtime evidence, live credential-layout proof, GitHub remote bootstrap, GitHub platform-gate evidence, and latest Slack/Telegram identifier corrections incorporated
+Version: 2026-04-20 v7
+Status: Phase 0 execution artifact; mk2 runtime evidence, live credential-layout proof, GitHub remote/bootstrap and platform-gate evidence, confirmed Slack admin-channel permalink, and preliminary Track A scan evidence incorporated
 
 ## 1. Purpose
 
@@ -42,7 +42,7 @@ This condensed table mirrors the live ingress/admin surfaces from `AX_PHASE0_INV
 | Surface | Current owner | Current credential holder | Target owner |
 |---|---|---|---|
 | Telegram manager groups (`ABEL`, `은혜`) | `main` / `jarvis` | shared Telegram bot token | `hq-router` only |
-| Slack `#000-대표-똘똘이` (`C0ASNEFES4C`) | `main`, approval workflow, heartbeat escalation | shared Slack app/bot token | `hq-router` + human approvers |
+| Slack `#000-대표-똘똘이` (`C0ASNEFES4C`; permalink `https://eunhyebooboo.slack.com/archives/C0ASNEFES4C`) | `main`, approval workflow, heartbeat escalation | shared Slack app/bot token | `hq-router` + human approvers |
 | Slack DM `D0AS8534L01` | 강은구 ↔ Slack app `똘똘` | existing shared Slack app/bot token | temporary simple mirror only; move to dedicated private channel if multi-reader access becomes necessary |
 | Slack `#003-간부회의` (`C0ASGQQFP8W`) | `main` + 13 team leads | shared Slack app/bot token | consolidated core-team leads |
 | Slack `#999-컨퍼런스` (`C0ASM1RBWBX`) | `main` + 13 team leads | shared Slack app/bot token | consolidated core-team leads |
@@ -112,7 +112,7 @@ Current retirement candidates:
 
 - `AX_GUARD_FAILMODE_AND_RUNTIME_POLICY.md` has been recovered from mk2 evidence and key guard install markers were verified on the live host.
 - The exact historical 57-skill manifest is still missing, but later `90 -> 65` mapping evidence exists and current-state classification no longer depends on the historical count.
-- Slack/Telegram live runtime now proves shared platform-level credentials. 강은구 confirmed AX will reuse the existing tokens (`똘똘` / `@SN_ocle_bot`) rather than minting new ones, so the remaining blocker is prior-flow retirement, exposure-history verification, and SOPS+age migration.
+- Slack/Telegram live runtime now proves shared platform-level credentials. 강은구 confirmed AX will reuse the existing tokens (`똘똘` / `@SN_ocle_bot`) rather than minting new ones, and Slack API search confirmed the current admin-channel permalink as `https://eunhyebooboo.slack.com/archives/C0ASNEFES4C`. The remaining blocker is no longer destination discovery but prior-flow retirement, exposure-history verification, and SOPS+age migration.
 - Branch-protection and reviewer-enforcement proof are still missing; branch-protection APIs return `403 Upgrade to GitHub Pro or make this repository public` for this private repo on 2026-04-20, so the remaining blocker is now a hosting-plan gate rather than repo bootstrap.
 
 ## 9. Sanitized runtime snapshot (2026-04-20)
@@ -144,7 +144,7 @@ Interpretation:
 | Telegram topic evidence | `은혜그룹` config includes topic `92` as an archive topic; cron session keys also reference topic `1` for archive runs |
 | Telegram route binding | live `openclaw.json` binding routes Telegram channel traffic to `main` |
 | Slack key bindings | live `openclaw.json` bindings align with recovered key Slack channel IDs such as `C0ASNEFES4C`, `C0ASGQQFP8W`, `C0ASM1RBWBX` |
-| Slack workspace and bot identity | 강은구 confirmed Slack workspace `eunhyebooboo.slack.com`, app `똘똘`, bot member `U0ARNS78EM9`, and current DM endpoint `D0AS8534L01`; `eunhyebooboo.slack.com` is a workspace identifier rather than a channel ID, so current DM/channel evidence remains the concrete destination evidence until a channel URL or ID is separately confirmed |
+| Slack workspace and bot identity | 강은구 confirmed Slack workspace `eunhyebooboo.slack.com`, app `똘똘`, bot member `U0ARNS78EM9`, and current DM endpoint `D0AS8534L01`; Slack API search additionally confirmed the current admin-channel permalink `https://eunhyebooboo.slack.com/archives/C0ASNEFES4C` for `#000-대표-똘똘이`, and recent message hits from 2026-04-15/16 show that this legacy path is still live |
 
 ### 9.3 Guard install evidence
 
@@ -173,6 +173,18 @@ Interpretation:
 - 강은구 has explicitly chosen token reuse plus old-flow retirement instead of immediate dedicated AX credential issuance
 - this resolves the execution-path decision, but Track A must still verify whether prior exposure forces rotation before cutover
 
+### 9.6 Preliminary Track A repo scan
+
+| Repo scope | Safe finding |
+|---|---|
+| `ax-audit` | no tracked `.env*` or `*secret*` files were found; current secret references are policy/docs or env-var instructions only |
+| `ax_handoff_package` | no tracked `.env*` or `*secret*` files were found; token mentions are setup instructions only |
+| `똘똘이mk2` | local `SECRETS.md` exists but is gitignored; tracked `dashboard/.env.example` exists; git-history keyword scan still hits token-handling code paths in `src/config.ts`, `src/telegram-bot.ts`, `scripts/heartbeat.py`, and `scripts/heartbeat_checks/info_requests.py` |
+
+Interpretation:
+- the safe scan found no new tracked secret-bearing files in the AX repo itself or the handoff package repo
+- `똘똘이mk2` still contains the local secret-store pattern and token-handling code history, so exposure verification remains open until the approved full repo scope is scanned and rotation necessity is decided
+
 ## 10. GitHub platform-gate evidence (2026-04-20)
 
 | Surface | Observed result |
@@ -180,7 +192,9 @@ Interpretation:
 | GitHub Actions manual run | `owner-absence-validate` workflow runs `24640809639` and `24642505500` were both created, but the jobs did not start and GitHub reported: `The job was not started because recent account payments have failed or your spending limit needs to be increased.` |
 | Branch-protection API | `gh api repos/hakhamsolution/ax-audit/branches/main/protection` returned `403 Upgrade to GitHub Pro or make this repository public to enable this feature.` |
 | Rulesets API | `gh api repos/hakhamsolution/ax-audit/rulesets` returned the same `403 Upgrade to GitHub Pro or make this repository public to enable this feature.` |
+| Current repo state | GitHub connector still reports `hakhamsolution/ax-audit` as a private repo on `main`; latest pushed commit `2c37edb` currently has no attached workflow runs or status checks |
 
 Interpretation:
 - GitHub Actions runtime is currently blocked by billing/account payment state, not by the workflow YAML shape
 - repository-level branch protection for this private repo is currently blocked by the active GitHub plan
+- the latest `main` push did not produce any new attached checks that would contradict the billing/plan gate assessment
