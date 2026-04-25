@@ -1,7 +1,7 @@
 # AX_PHASE0_INVENTORY_TEMPLATE
 
-Version: 2026-04-20 v13
-Status: populated with current-state evidence and re-aligned to package-v2 Decision 15 baseline; representative-provided Slack/Telegram cutover details, confirmed Slack admin-channel proof, and preliminary Track A scan evidence are incorporated; remaining blockers are documented in §10 and §16
+Version: 2026-04-26 v15
+Status: populated with current-state evidence and re-aligned to package-v2 Decision 15 baseline; billing gate resolved by self-hosted runner cutover (workflow run `24934831397` 13s success on 2026-04-25); plan-gate resolved 2026-04-26 by Owner decision to flip `hakhamsolution/ax-audit` from private to public (branch-protection / rulesets APIs now accessible); Track A is finalized with confirmed plain-text Slack bot-token exposure in `똘똘이mk2` git history, and Owner has explicitly decided NOT to rotate the exposed Slack/Telegram bot tokens at this time — the exposure is therefore a recorded acceptance of risk by the Owner. Remaining blockers documented in §10 and §16
 Patch record:
 - v2 incorporated AX_DEPUTY_OWNER_PATCH (2026-04-18 v1 active)
 - v3 filled §15 with confirmed values, added §15.5 (AI agents), added §15.6 (immediate follow-up actions)
@@ -15,6 +15,8 @@ Patch record:
 - v11 incorporates representative-provided Slack/Telegram concrete values: Slack app `똘똘`, bot member `U0ARNS78EM9`, DM endpoint `D0AS8534L01`, Telegram bot `@똘똘이`, and the decision to reuse existing tokens while retiring the prior flow
 - v12 corrects those concrete values by distinguishing Slack workspace `eunhyebooboo.slack.com` from channel-level evidence and by updating the Telegram bot identifier to `@SN_ocle_bot`
 - v13 confirms the current Slack admin-channel permalink `https://eunhyebooboo.slack.com/archives/C0ASNEFES4C`, records that the legacy Slack path is still active, and logs a preliminary Track A repo scan
+- v14 records billing-gate resolution via `hakham-vps` self-hosted runner cutover (workflow run `24934831397` success in 13s), distinguishes the still-active plan-gate (branch-protection / rulesets API 403) from the now-resolved billing gate, and finalizes Track A with a confirmed plain-text Slack bot-token exposure in `똘똘이mk2` git history
+- v15 records two Owner decisions made on 2026-04-26: (a) `hakhamsolution/ax-audit` was flipped from private to public to remove the plan-gate; branch-protection now returns `404 Branch not protected` and rulesets returns `[]`, both indicating API access is restored, and (b) the exposed Slack/Telegram bot tokens identified by Track A will NOT be rotated at this time; the exposure is recorded as an Owner-accepted residual risk and the AX cutover will continue to reuse the existing tokens
 
 ## 1. Purpose
 
@@ -219,15 +221,16 @@ Live runtime note (2026-04-20):
 - Telegram live config contains exactly one `botToken` under `root.channels.telegram`; no per-group Telegram token split is evidenced in the current runtime snapshot.
 - 강은구 confirmed the concrete bot identities and chose to reuse these existing tokens for AX after prior-flow retirement rather than minting a new AX-only token set.
 - preliminary Track A repo scan across `ax-audit`, `ax_handoff_package`, and `똘똘이mk2` found no tracked `.env*` or `*secret*` files in `ax-audit`/`ax_handoff_package`; in `똘똘이mk2`, `SECRETS.md` exists locally but is gitignored, while `dashboard/.env.example` is tracked.
-- the same Track A scan found token-handling code history in `똘똘이mk2` files such as `src/config.ts`, `src/telegram-bot.ts`, `scripts/heartbeat.py`, and `scripts/heartbeat_checks/info_requests.py`, so exposure verification remains open pending approved broader scan scope and rotation decision.
-- Therefore the remaining gate is not "new credential issuance" but `prior-flow retirement + Track A exposure verification + SOPS+age migration`.
+- Track A finalization (2026-04-26): a deeper history scan of `똘똘이mk2` confirmed a plain-text Slack bot token of the form `xoxb-9849432992692-…` is present in past commits (and is also already self-classified as "재발급 필요" inside the repo's own `SECRETS.md` audit notes). `dashboard/.env.example` itself only carries placeholder values (`changeme`). The previously suspected `src/config.ts` and `src/telegram-bot.ts` paths are no longer in the current tree — the surviving live token-handling surface is the `scripts/heartbeat.py` / `scripts/heartbeat_checks/*.py` family, which reads `OPENCLAW_GATEWAY_TOKEN`, `OPENAI_API_KEY`, and `LIGHTRAG_API_KEY` from environment only (no inlined values).
+- Therefore the remaining gate is not "new credential issuance" but `prior-flow retirement + R1 rotation of the exposed Slack bot/app token (and as a precaution, the Telegram bot token) + SOPS+age migration`. R1 rotation is AI-proposer / 강은구-approver per §15.3; it is not a γ gate action.
+- Owner decision (2026-04-26): the R1 rotation of the exposed Slack bot/app token and the precautionary Telegram bot rotation will NOT be performed at this time. The exposure is therefore recorded as an Owner-accepted residual risk, and AX cutover continues to reuse the existing tokens. The exposure record above is retained verbatim; future AI proposals must not auto-resurrect this rotation unless a new signal (abuse, unauthorized use, or new policy direction from the Owner) appears. SOPS+age migration of token custody remains a separate scheduled item and is not affected by this decision.
 
 ## 10. Missing asset list
 
 | Asset | Why needed | Where expected | Blocking severity | Recovery plan |
 |---|---|---|---|---|
 | historical 57-skill manifest | historical handoff mentions 57-skill classification, but only later `90 -> 65` mapping evidence is currently recovered | archived handoff / legacy repo / install logs | low | recover later for archival completeness; do not block current-state skill classification on it |
-| GitHub billing / branch-protection proof | proposer-approver technical enforcement is currently unavailable on the present GitHub setup: Actions runs are billing-gated and branch-protection/ruleset APIs returned `403 Upgrade to GitHub Pro or make this repository public` on 2026-04-20 | GitHub billing + hosting plan / repository settings | high | settle billing, then either upgrade plan, move governance repo to a tier that supports private-repo protection, or make the repo public if policy permits; only then capture settings proof during WB2 |
+| GitHub branch-protection / rulesets configuration proof | plan-gate is resolved 2026-04-26 by flipping `hakhamsolution/ax-audit` to public; branch-protection API now returns `404 Branch not protected` and rulesets API returns `[]`, confirming API access is restored. The remaining work is to actually configure protection on `main` (require PR review, required status check `validate`, and disallow direct push) so that proposer-approver separation is technically enforced rather than policy-only. | GitHub repository settings | medium | configure `main` branch protection during WB2 with `validate` as a required check; capture settings proof in PHASE0 §14 once applied |
 | Slack/Telegram prior-flow retirement proof | representative confirmed existing tokens will be reused, and the current Slack admin-channel target is now confirmed as `#000-대표-똘똘이 (C0ASNEFES4C, permalink https://eunhyebooboo.slack.com/archives/C0ASNEFES4C)`, but AX cutover is not complete until the previous flow is actually retired and the shared-read path is explicitly settled | Slack / Telegram operational runtime | medium | complete prior-flow shutdown, confirm only AX path remains, decide whether DM `D0AS8534L01` stays temporary-only or is replaced by a dedicated shared channel, then store token custody in SOPS+age |
 
 ## 11. Skill-by-skill classification table
@@ -303,12 +306,12 @@ The exact historical "57 skills" manifest referenced in earlier migration notes 
 
 | Action | Current approver | Current method | Logged? | Proposer type today | Proposed future approver |
 |---|---|---|---|---|---|
-| promote automation | 강은구 | GitHub PR + written approval intended; technical enforcement is still incomplete because this private repo's branch-protection/ruleset APIs are plan-gated and Actions execution is billing-gated | partial | AI | 강은구 |
+| promote automation | 강은구 | GitHub PR + written approval intended; CI execution unblocked (self-hosted runner verified 2026-04-25), and plan-gate resolved by 2026-04-26 public-flip; protection on `main` is now configurable but not yet configured — PR-only enforcement remains policy-only until WB2 applies the protection ruleset | partial | AI | 강은구 |
 | demote automation | 강은구 | PR + written approval intended; active-failure containment demotion may proceed first and be reviewed afterward | partial | AI / mixed | 강은구 |
 | rotate secrets R1 | 강은구 | runbook + secret-store action with Owner approval | partial | AI / mixed | 강은구 |
 | rotate secrets R2 | 강은구 | γ gate required: AI proposal + independent AI review + Owner approval; backend not yet migrated | partial | AI | 강은구 |
 | restart services | 강은구 (Operator emergency path exists) | direct host action under documented runbook; retrospective log required if taken as emergency containment | partial | AI / Operator | 강은구 |
-| change guard rule | 강은구 | intended PR + independent AI review; technical enforcement proof is still blocked on current GitHub hosting plan | partial | AI | 강은구 |
+| change guard rule | 강은구 | intended PR + independent AI review; plan-gate resolved 2026-04-26, but technical enforcement on `main` is still policy-only until WB2 applies branch-protection requiring PR review + reviewer comment | partial | AI | 강은구 |
 | change architecture definition | 강은구 | ADR/doc PR + independent AI review before approval | yes | AI | 강은구 |
 
 Recovered current-channel routing note:
@@ -395,8 +398,8 @@ Every AI agent that can read secrets, write repos/docs, or trigger privileged ac
 
 1. Complete WB2 access realignment for 원혜연: keep business-side write paths where required, but reduce governance surfaces to read or approval-only where policy demands.
 2. Establish and preserve an independent Claude Code reviewer session for γ gate actions; reviewer and proposer must remain distinct sessions with distinct context.
-3. Resolve GitHub hosting blockers so PR-only enforcement can be proven technically: current blockers are private-repo protection plan gate and Actions billing gate.
-4. Complete Slack/Telegram cutover using the existing tokens (`똘똘` / `@SN_ocle_bot`), treat `#000-대표-똘똘이 (C0ASNEFES4C, permalink https://eunhyebooboo.slack.com/archives/C0ASNEFES4C)` as the currently confirmed Slack admin channel, retire the prior flow, and run Track A verification to decide whether rotation is required before AX cutover.
+3. Configure `main` branch protection on the now-public `hakhamsolution/ax-audit` so PR-only enforcement is technical rather than policy-only. Required-check baseline: `validate` (the existing self-hosted-runner job). This is the first concrete WB2 deliverable.
+4. Slack/Telegram cutover stance is now finalized by Owner decision (2026-04-26): the exposed Slack bot/app token (and the precautionary Telegram bot token) will NOT be rotated at this time. The exposure is recorded as Owner-accepted residual risk and AX cutover continues to reuse the existing tokens. PHASE0 §9 retains the exposure record; future AI-proposed rotation must not be auto-suggested unless new signal (e.g., abuse, unauthorized use) appears.
 5. Continue Phase A owner-absence automation build only under the proposer-approver pipeline.
 6. Keep the Notion operational DB title mismatch (`AX 소유자 부재 신고` vs package-v2 canonical English title) as an explicit reconciliation item rather than silently renaming it.
 
@@ -422,4 +425,4 @@ Do not skip this document.
 If someone asks for migration planning without a completed Phase 0 inventory, the correct response is to say the migration is still evidence-incomplete.
 
 As of 2026-04-20, §§4–15.5 are populated from the current recoverable evidence set and are re-aligned to the package-v2 Decision 15 baseline.
-Phase 0 is still not complete because GitHub Actions execution is still billing-gated, branch-protection enforcement for this private repo is currently plan-gated, Slack/Telegram prior-flow retirement and exposure-history verification are still pending even though token reuse is now an explicit human decision, and a few non-blocking historical archival gaps are still outstanding as listed in §10 and §16.
+As of 2026-04-26: the GitHub Actions billing gate is resolved by self-hosted runner cutover; the GitHub plan-gate is resolved by Owner-approved public-flip of `hakhamsolution/ax-audit` and verified via the now-200/`[]` responses from the branch-protection and rulesets APIs; Track A is finalized with a confirmed Slack bot-token exposure in `똘똘이mk2` history but the Owner has explicitly elected NOT to rotate the exposed token, so the exposure is now an Owner-accepted residual risk rather than a pending rotation task; the remaining hosting work is to actually configure `main` branch protection during WB2 with the `validate` job as a required check; Slack/Telegram prior-flow retirement is still pending; and a few non-blocking historical archival gaps remain as listed in §10 and §16.
