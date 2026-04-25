@@ -6,12 +6,18 @@ on:
     paths:
       - audit/owner_absence.jsonl
       - audit/owner_absence.schema.json
+      - backlog.md
+      - docs/active/**
+      - docs/handoff/**
       - scripts/validate_owner_absence.py
       - .github/workflows/owner-absence-validate.yml
   push:
     paths:
       - audit/owner_absence.jsonl
       - audit/owner_absence.schema.json
+      - backlog.md
+      - docs/active/**
+      - docs/handoff/**
       - scripts/validate_owner_absence.py
       - .github/workflows/owner-absence-validate.yml
 
