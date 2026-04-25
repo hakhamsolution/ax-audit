@@ -1,11 +1,12 @@
 # AX_HANDOFF_TO_CLAUDE_CODE
 
-Version: 2026-04-18 v2
-Status: execution handoff reflecting Decision 15 (AI-proposer / Human-approver)
+Version: 2026-04-26 v3
+Status: execution handoff reflecting Decision 15 (AI-proposer / Human-approver); WB2 deadline revised after the 2026-04-26 cycle pass that resolved the GitHub plan-gate via public-flip and recorded the Owner decision to defer Track A token rotation
 Audience: Codex (proposer) and Claude Code (γ gate reviewer), plus any other AI agent declared in PHASE0 §15.5.
 Patch record:
 - v1 (2026-04-18) written under Deputy Owner hybrid model; revoked same day
 - v2 (2026-04-18) aligned with Decision 15
+- v3 (2026-04-26) revises WB2 deadline from 2026-04-21 to 2026-05-08 by Owner decision; defines the `main` branch-protection ruleset as the first WB2 deliverable, executed end-to-end under γ gate (Codex proposer + distinct Claude Code reviewer + 강은구 approver) so that this protection round itself counts toward the K4 KPI
 
 This document is an execution launcher, not a new policy.
 
@@ -153,17 +154,18 @@ Audit record (not runtime):
 
 ### WB2 — Access realignment
 
-**Deadline**: 2026-04-21.
+**Deadline**: 2026-05-08 (revised 2026-04-26 by Owner decision; original was 2026-04-21).
 
 **Purpose**: align technical access with Decision 15 model.
 
 **Steps** (Codex proposer for each change, Claude Code reviewer for γ gate changes, 강은구 approver):
-1. Codex inventories every repo, secret store, data path where 강은구 or 원혜연 has direct write access.
-2. For 원혜연: since her role is Business Work Partner and dormant Deputy, most direct write accesses should be reduced to read-only, except specific business-data paths where she needs write for work accept/modify. Codex drafts a reduction PR; 강은구 approves.
-3. For 강은구: Codex ensures that for γ gate action classes, direct single-actor execution is technically prevented on the infrastructure (branch protection requiring PR review, two-person rule on infra repo, etc.). Codex drafts configuration PR; Claude Code reviews (γ gate changes to access enforcement); 강은구 approves.
-4. Codex records before/after in `backlog.md` under `access_realignment_log`.
+1. **First deliverable (γ gate end-to-end, doubles as K4 KPI proof):** Codex drafts a configuration PR that turns on `main` branch protection for `hakhamsolution/ax-audit` with at minimum: require a pull-request review before merge, require status check `validate` to pass, disallow direct push to `main`, and enforce the rule for repository administrators. The PR body must include the exact `gh api PUT /repos/hakhamsolution/ax-audit/branches/main/protection` call (or `gh api PUT /repos/hakhamsolution/ax-audit/rulesets/{id}` if rulesets are preferred) and the expected post-state from `gh api .../branches/main/protection`. A distinct Claude Code reviewer session (not the proposing session) posts a policy-conformance comment citing PHASE0 §15.3 (`change_guard_rule` is γ gate) and §14 (technical enforcement currently policy-only). 강은구 approves and Codex applies the protection, then captures the post-state proof into PHASE0 §14 / `backlog.md`.
+2. Codex inventories every repo, secret store, data path where 강은구 or 원혜연 has direct write access.
+3. For 원혜연: since her role is Business Work Partner and dormant Deputy, most direct write accesses should be reduced to read-only, except specific business-data paths where she needs write for work accept/modify. Codex drafts a reduction PR; 강은구 approves.
+4. For 강은구: Codex ensures that for the remaining γ gate action classes, direct single-actor execution is technically prevented on the rest of the infrastructure (Slack/Telegram admin paths, Notion canonical, OpenClaw host runner, secret stores). Codex drafts configuration PR; Claude Code reviews (γ gate changes to access enforcement); 강은구 approves.
+5. Codex records before/after in `backlog.md` under `access_realignment_log`.
 
-**Success**: any γ gate action attempted as single-actor on the infrastructure is blocked technically, not just by policy.
+**Success**: any γ gate action attempted as single-actor on the infrastructure is blocked technically, not just by policy. The first deliverable additionally proves K4 (γ gate workflow verified end-to-end) without manufacturing a synthetic test case.
 
 ### WB3 — Current-state inventory
 
