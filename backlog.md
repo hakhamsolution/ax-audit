@@ -31,7 +31,7 @@ _(empty — append as found)_
 
 ## access_realignment_log
 
-_(empty — populate during WB2; one line per access change with before/after)_
+- 2026-04-26 (proposed): apply branch protection to hakhamsolution/ax-audit main — before: protection unset (gh api repos/hakhamsolution/ax-audit/branches/main/protection => 404 Branch not protected; gh api repos/hakhamsolution/ax-audit/rulesets => []); after-target: require pull_request review (1 approving review, dismiss stale on new commits), require status check "validate", enforce on admins, disallow force push, disallow deletions. Proposer: Codex; Reviewer: pending (distinct Claude Code session); Approver: 강은구. PR: https://github.com/hakhamsolution/ax-audit/pull/3.
 
 ## operational_bookmarks
 
