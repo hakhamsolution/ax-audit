@@ -1,0 +1,58 @@
+{
+  "name": "ax-phase-a-sandbox",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "owner-absence-sandbox",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wb-001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "ax-phase-a-sandbox-webhook"
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// AX Phase A sandbox: schema-shape check only — no external fanout\nconst required = [\n  'declaration_id', 'schema_version', 'declared_by', 'start_time',\n  'open_ended', 'trigger_condition', 'response_window_used',\n  'ratification_status', 'canonical_source', 'sync_state',\n  'created_at', 'last_updated_at'\n];\n\nconst items = $input.all();\nconst out = [];\nfor (const item of items) {\n  const body = item.json.body || item.json;\n  const missing = required.filter(k => !(k in body));\n  const isSandbox = String(body.declaration_id || '').startsWith('OA-SANDBOX-');\n  out.push({\n    json: {\n      sandbox: true,\n      ok: missing.length === 0 && isSandbox,\n      validated_at: new Date().toISOString(),\n      declaration_id: body.declaration_id || null,\n      missing_fields: missing,\n      sandbox_id_check: isSandbox ? 'pass' : 'fail (id must start with OA-SANDBOX-)',\n      schema_version: body.schema_version || null,\n      received_keys: Object.keys(body).sort(),\n      note: 'sandbox dry-run: no Git append, no Slack post, no Telegram post'\n    }\n  });\n}\nreturn out;"
+      },
+      "id": "vd-001",
+      "name": "ValidateSandboxRecord",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "ValidateSandboxRecord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}
